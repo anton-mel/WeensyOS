@@ -13,7 +13,7 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 Note: Use Cisco VPN to connect off-campus
 https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/
 
-Project is currently ~under development~
+Project is currently under development
 For any questions, please reach out to 
 anton.melnychuk@yale.edu
 
