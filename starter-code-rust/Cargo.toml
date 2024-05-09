@@ -1,0 +1,5 @@
+[package]
+name = "weensyos"
+version = "0.1.0"
+authors = ["Anton Melnychuk <anton.melnychuk@yale.edu>"]
+edition = "2018"
