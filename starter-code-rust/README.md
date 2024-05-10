@@ -24,7 +24,7 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 
 ### Run QEMU-Display
 
-Finally, run QEMU via bootimage runner ```cargo xrun --target your_custom_target.json [other_args] -- [qemu args]```. I use ```cargo run -- -nographic``` Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon. You can also run QEMU via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, I will keep it for now off). Read more here: https://github.com/rust-osdev/bootimage.
+Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. I use ```cargo run -- -nographic``` Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon. You can also run QEMU via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, I will keep it for now off). Read more here: https://github.com/rust-osdev/bootimage.
 
 
 # Environment Configs

@@ -15,24 +15,14 @@
 // Unwinding panics are not supported without std
 use core::panic::PanicInfo;
 
-static HELLO: &[u8] = b"Hello World!";
+// Import Modules Here
+mod vga_buffer;
 
 // Overwriting the operating system entry point with our _start
 #[no_mangle] // don't mangle (cryptic) the name of this function
 pub extern "C" fn _start() -> ! {
-    // entry point since named `_start` by default
-    
-    let vga_buffer = 0xb8000 as *mut u8;
-    // Try to print all leters from the vga buffer directly
-    for (i, &byte) in HELLO.iter().enumerate() {
-        // Rust compiler can’t prove that the raw pointers we create are valid
-        // Note: We want to minimize the use of unsafe as much as possible
-        unsafe { // therefore need unsafe here
-            *vga_buffer.offset(i as isize * 2) = byte;
-            *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
-        }
-    }
-    
+    vga_buffer::print_something();
+
     loop {}
 }
 
