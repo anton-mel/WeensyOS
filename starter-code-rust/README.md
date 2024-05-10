@@ -11,23 +11,19 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 
 # How to build
 
-### Execute only once:
-
-Get to the root: ```cd ./starter-code-rust```
-
-Change rust-toolchain: ```rustup override set nightly```
-
-Build Target: ```cargo +nightly build --target x86_64-weensyos.json```
-
-Create Cargo Image: ```cargo bootimage```
-
-Image Created at `./target/x86_64-weensyos/debug/bootimage-weensyos.bin`
+<details>
+<summary>Execute only once</summary>
+    1. Get to the root: ```cd ./starter-code-rust```
+    2. Change rust-toolchain: ```rustup override set nightly```
+    3. Build Target: ```cargo +nightly build --target x86_64-weensyos.json```
+    4. Create Cargo Image: ```cargo bootimage```. Image Created at `./target/x86_64-weensyos/debug/bootimage-weensyos.bin`
+</details>
 
 (look for dependencies below)
 
 ### Run QEMU-Display
 
-Finally, run QEMU ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, I will keep it for now). Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon.
+Finally, run QEMU via bootimage runner ```cargo xrun --target your_custom_target.json [other_args] -- [qemu args]```. I use ```cargo run -- -nographic``` Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon. You can also run QEMU via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, I will keep it for now off). Read more here: https://github.com/rust-osdev/bootimage
 
 
 # Environment Configs
@@ -51,6 +47,6 @@ Instead of writing our own bootloader, which is a project on its own, we use the
 
 # Source Inspirations
 
-### Note: Please, consider reading through these documentations is you're plan to contribute
+Please, consider reading through these documentations is you're plan to contribute
 
 https://os.phil-opp.com/, https://www.theseus-os.com/, https://zoo.cs.yale.edu/classes/cs323/323/proj5/starter-code/
