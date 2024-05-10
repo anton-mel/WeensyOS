@@ -20,14 +20,15 @@ mod vga_buffer;
 
 // Overwriting the operating system entry point with our _start
 #[no_mangle] // don't mangle (cryptic) the name of this function
-pub extern "C" fn _start() -> ! {
-    vga_buffer::print_something();
+pub extern "C" fn _start() {
+    println!("Hello World{}", "!");
 
     loop {}
 }
 
 // This function is called on panic.
 #[panic_handler] // ! means never returns
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    println!("{}", info);
     loop {}
 }
