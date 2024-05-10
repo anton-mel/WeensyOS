@@ -26,9 +26,10 @@ rebuild everything. Here are all the commands:
 
 Change rust-toolchain: ```rustup override set nightly```
 
+Build Target: ```cargo +nightly build --target x86_64-weensyos.json```
+
 Create Cargo Image: ```cargo bootimage``` (only once)
 
-Build OS: ```cargo build```
 
 (look for dependencies below)
 
