@@ -2,7 +2,7 @@
 
 Project is currently under development. For any questions, please reach out via anton.melnychuk@yale.edu.
 
-This OS is written in Rust @ Frog (Yale) `ssh yournetid@frog.zoo.cs.yale.edu` [host]. Note: All Ubuntu Nodes do NOT have qemu-system-x86_64. Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/
+This OS is written in Rust @ Frog (Yale) `ssh yournetid@frog.zoo.cs.yale.edu` [host]. Note: All Ubuntu Nodes do NOT have qemu-system-x86_64. Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/.
 
 For [host]: CPU-arch: x86_64, Operating System: Linux (Fedora), Application binary interface: GNU
  
@@ -23,7 +23,7 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 
 ### Run QEMU-Display
 
-Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. I use ```cargo run -- -nographic``` Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon. You can also run QEMU via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, I will keep it for now off). Read more here: https://github.com/rust-osdev/bootimage.
+Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. I use ```cargo run -- -nographic``` for zoo I/O only. Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon. You can also run QEMU directly via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, no remote). Read more how bootimage linking works here: https://github.com/rust-osdev/bootimage.
 
 
 # Environment Configs
