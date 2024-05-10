@@ -1,0 +1,13 @@
+
+# recompile core and other standard library crates on demand, 
+# instead of using the precompiled versions shipped with the Rust installation.
+
+[unstable]
+build-std-features = ["compiler-builtins-mem"]
+build-std = ["core", "compiler_builtins"]
+
+# To avoid passing the --target parameter on every invocation 
+# of cargo build, we can override the default target. 
+
+[build]
+target = "x86_64-weensyos.json"
