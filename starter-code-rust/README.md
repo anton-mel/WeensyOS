@@ -15,12 +15,11 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 <summary>Execute only once</summary>
 
 1. Get to the root: ```cd ./starter-code-rust```
-2. Change rust-toolchain: ```rustup override set nightly```
+2. Change rust-toolchain: ```rustup override set nightly```, you might need ```rustup component add rust-src --toolchain nightly-aarch64-apple-darwin``` for MacOS-Darwin
 3. Build Target: ```cargo +nightly build --target x86_64-weensyos.json```
-4. Create Cargo Image: ```cargo bootimage```. Image Created at `./target/x86_64-weensyos/debug/bootimage-weensyos.bin`
+4. Create Cargo Image: ```cargo bootimage``` (look for dependencies below). Image Created at `./target/x86_64-weensyos/debug/bootimage-weensyos.bin`
 </details>
 
-(look for dependencies below)
 
 ### Run QEMU-Display
 
@@ -41,7 +40,7 @@ Instead of writing our own bootloader, which is a project on its own, we use the
   1. curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   2. cargo install bootimage
   3. rustup component add llvm-tools-preview
-  4. qemu-system-x86_64
+  4. apt install qemu-system-x86_64 for Linux or brew isntall qemu for MacOS
   
 </details>
 
