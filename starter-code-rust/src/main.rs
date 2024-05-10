@@ -1,4 +1,3 @@
-// src/main.rs
 
 // To write an operating system kernel, we need code that does not depend on any 
 // operating system features. This means that we can’t use threads, files, heap 
@@ -24,10 +23,10 @@ pub extern "C" fn _start() -> ! {
     // entry point since named `_start` by default
     
     let vga_buffer = 0xb8000 as *mut u8;
-
-    // print all leters from the vga buffer
+    // Try to print all leters from the vga buffer directly
     for (i, &byte) in HELLO.iter().enumerate() {
         // Rust compiler can’t prove that the raw pointers we create are valid
+        // Note: We want to minimize the use of unsafe as much as possible
         unsafe { // therefore need unsafe here
             *vga_buffer.offset(i as isize * 2) = byte;
             *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
