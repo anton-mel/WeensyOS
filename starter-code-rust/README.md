@@ -37,10 +37,10 @@ Instead of writing our own bootloader, which is a project on its own, we use the
 <details>
   <summary>Dependency List</summary>
 
-  1. curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-  2. cargo install bootimage
-  3. rustup component add llvm-tools-preview
-  4. apt install qemu-system-x86_64 for Linux or brew isntall qemu for MacOS
+  1. `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+  2. `cargo install bootimage`
+  3. `rustup component add llvm-tools-preview`
+  4. `apt install qemu-system-x86_64` for Linux or `brew isntall qemu` for MacOS
   
 </details>
 
