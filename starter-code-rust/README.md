@@ -2,7 +2,7 @@
 
 Project is currently under development. For any questions, please reach out via anton.melnychuk@yale.edu.
 
-This OS is written in Rust @ Frog (Yale) `ssh yournetid@frog.zoo.cs.yale.edu` [host]. Note: All Ubuntu Nodes do NOT support qemu-system-x86_64. Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/
+This OS is written in Rust @ Frog (Yale) `ssh yournetid@frog.zoo.cs.yale.edu` [host]. Note: All Ubuntu Nodes do NOT have qemu-system-x86_64. Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/
 
 For [host]: CPU-arch: x86_64, Operating System: Linux (Fedora), Application binary interface: GNU
  
