@@ -56,13 +56,11 @@ Instead of writing our own bootloader, which is a project on its own, we use the
 
 Please, consider reading through these documentations is you're plan to contribute:
 
-<details>
-    <summary>Documentation Links</summary>
-
+```
     1. https://os.phil-opp.com/
     2. https://www.theseus-os.com/
     3. https://zoo.cs.yale.edu/classes/cs323/323/proj5/starter-code/
-</details>
+```
 
 Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/ or develop locally.
 
