@@ -54,7 +54,7 @@ Instead of writing our own bootloader, which is a project on its own, we use the
 
 # Source Inspirations & How to contribute
 
-Please, consider reading through these documentations is you're plan to contribute:
+Please, consider reading through these documentations is you plan to contribute:
 
 ```
     1. https://os.phil-opp.com/
