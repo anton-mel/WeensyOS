@@ -20,14 +20,14 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 4. Create Cargo Image: ```cargo bootimage``` (look for dependencies below). Image Created at `./target/x86_64-weensyos/debug/bootimage-weensyos.bin`
 </details>
 
-# How to test
-
-Current implementation does not include any test cases, but we still provide a simple `cargo test` terminal setup.
-
-
 ### Run QEMU-Display
 
 Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. I use ```cargo run -- -nographic``` for zoo I/O only. Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon. You can also run QEMU directly via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, no remote). Read more how bootimage linking works here: https://github.com/rust-osdev/bootimage.
+
+
+# How to test
+
+Current implementation does not include any test cases, but we still provide a simple `cargo test` terminal setup.
 
 
 # Environment Configs
