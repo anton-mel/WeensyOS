@@ -27,7 +27,7 @@ Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.
 
 # How to test
 
-Current implementation provides our own simple `cargo test` setup using standart `#[test_case]` implementation that outputs directly to the terminal via serial port. Public test cases for the project 4/5 will be implement along way the development of WeensyOS.
+Current implementation provides our own simple `cargo test` setup using standart `#[test_case]` implementation that outputs directly to the terminal via serial port and quits qemu. Public test cases for the project 4/5 will be implement along way the development of WeensyOS.
 
 
 # Environment Configs
