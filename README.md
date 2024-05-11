@@ -64,7 +64,7 @@ Please, consider reading through these documentations is you're plan to contribu
     3. https://zoo.cs.yale.edu/classes/cs323/323/proj5/starter-code/
 </details>
 
-Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/.
+Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/ or develop locally.
 
 # Preview
 
