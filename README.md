@@ -1,6 +1,6 @@
 # WeesyOS in Rust
 
-Project is currently under development. For any questions, please reach out via anton.melnychuk@yale.edu.
+Project is currently under development under Professor Lin Zhong supervision. For any questions, please reach out via anton.melnychuk@yale.edu.
 
 WeensyOS is a tiny kernel that can run on bare-metal x86-64 machines (for project 4/5 @ Yale, QEMU's emulated CPUs), developed by Eddie Kohler. The initial state of the kernel contains code for bootstrapping kernel, handling exceptions/syscalls, executing user-level program, and helper functions for your CPSC 323 exercises.
 
@@ -54,7 +54,7 @@ Instead of writing our own bootloader, which is a project on its own, we use the
 
 # Source Inspirations & How to contribute?
 
-Please, consider reading through these documentations is you're plan to contribute
+Please, consider reading through these documentations is you're plan to contribute:
 
 <details>
     <summary>Documentation Links</summary>
