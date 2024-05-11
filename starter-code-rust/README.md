@@ -27,7 +27,7 @@ Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.
 
 # How to test
 
-Current implementation does not include any test cases, but we still provide a simple `cargo test` terminal setup.
+Current implementation provides our own simple `cargo test` terminal setup using standart `#[test_case]` implementation that outputs directly to the terminal via serial port.
 
 
 # Environment Configs
