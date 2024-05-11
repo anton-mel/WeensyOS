@@ -10,7 +10,7 @@ This OS is written in Rust @ Frog (Yale) `ssh yournetid@frog.zoo.cs.yale.edu`:
     CPU-arch: x86_64, Operating System: Linux (Fedora), Application binary interface: GNU
 </p>
  
-By compiling for our host triple, the Rust compiler and the linker assume that there is an underlying operating system such as Linux or Windows that uses the C runtime by default, which causes the linker errors. So, to avoid the linker errors, we compile for our own environment ```x86_64-weensyos.json``` with no underlying operating system [look how to build].
+By compiling for our host triple, the Rust compiler and the linker assume that there is an underlying operating system such as Linux (Frog Node) that uses the C runtime by default, which causes the linker errors. So, to avoid the linker errors, we compile for our own environment ```x86_64-weensyos.json``` with no underlying operating system [look how to build].
 
 
 # How to build
