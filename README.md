@@ -69,5 +69,5 @@ Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/
 Current version of WeensyOS looks like this:
 
 <p align="center">
-    <img width="717" alt="image" src="https://github.com/anton-mel/WeensyOS/assets/78281795/cb14c67e-3b1a-4b07-9d49-6ed974bb4885">
+    <img width="1081" alt="image" src="https://github.com/anton-mel/WeensyOS/assets/78281795/9a24cf56-dff0-471d-97e0-50960671d32b">
 </p>
