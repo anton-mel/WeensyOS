@@ -58,4 +58,6 @@ Please, consider reading through these documentations is you're plan to contribu
 https://os.phil-opp.com/, https://www.theseus-os.com/, https://zoo.cs.yale.edu/classes/cs323/323/proj5/starter-code/
 
 
+# Preview
+
 <img width="717" alt="image" src="https://github.com/anton-mel/WeensyOS/assets/78281795/cb14c67e-3b1a-4b07-9d49-6ed974bb4885">
