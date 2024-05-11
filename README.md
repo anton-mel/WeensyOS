@@ -36,7 +36,7 @@ Current implementation provides our own simple `cargo test` setup using standart
 
 # Environment Configs
 
-Rust has three release channels: stable, beta, and nightly. The Rust Book explains the difference between these channels really well, so take a minute and check it out. For building an operating system, we will need some experimental features that are only available on the nightly channel, so we need to install a nightly version of Rust.
+Rust has three release channels: stable, beta, and nightly. We will need some experimental features that are only available on the nightly channel, so we need to install a nightly version of Rust.
 ```rustc 1.80.0-nightly (87293c958 2024-05-08)```
 
 Instead of writing our own bootloader, which is a project on its own, we use the bootloader crate. This crate implements a basic BIOS bootloader without any C dependencies, just Rust and inline assembly. Read more how bootimage linking works here: https://github.com/rust-osdev/bootimage.
