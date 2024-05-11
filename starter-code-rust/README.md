@@ -20,6 +20,10 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 4. Create Cargo Image: ```cargo bootimage``` (look for dependencies below). Image Created at `./target/x86_64-weensyos/debug/bootimage-weensyos.bin`
 </details>
 
+# How to test
+
+Current implementation does not include any test cases, but ptovides a simple `cargo test` terminal assertions template.
+
 
 ### Run QEMU-Display
 
