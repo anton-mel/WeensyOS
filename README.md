@@ -26,7 +26,7 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 
 ### Run QEMU-Display
 
-Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. I use ```cargo run -- -nographic``` for zoo I/O only. Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon. You can also run QEMU directly via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, no remote). Read more how bootimage linking works here: https://github.com/rust-osdev/bootimage.
+Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. I use ```cargo run -- -nographic``` for zoo I/O only. Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon. You can also run QEMU directly via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, no remote).
 
 
 # How to test
@@ -39,8 +39,7 @@ Current implementation provides our own simple `cargo test` setup using standart
 Rust has three release channels: stable, beta, and nightly. The Rust Book explains the difference between these channels really well, so take a minute and check it out. For building an operating system, we will need some experimental features that are only available on the nightly channel, so we need to install a nightly version of Rust.
 ```rustc 1.80.0-nightly (87293c958 2024-05-08)```
 
-Instead of writing our own bootloader, which is a project on its own, we use the bootloader crate. This crate implements a basic BIOS bootloader without any C dependencies, just Rust and inline assembly.
-
+Instead of writing our own bootloader, which is a project on its own, we use the bootloader crate. This crate implements a basic BIOS bootloader without any C dependencies, just Rust and inline assembly. Read more how bootimage linking works here: https://github.com/rust-osdev/bootimage.
 
 <details>
   <summary>Dependency List</summary>
