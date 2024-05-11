@@ -6,9 +6,19 @@ edition = "2018"
 
 [dependencies]
 bootloader = "0.9.8"
+uart_16550 = "0.2.0"
 volatile = "0.2.6"
+x86_64 = "0.14.2"
 spin = "0.5.2"
 
 [dependencies.lazy_static]
 version = "1.0"
 features = ["spin_no_std"]
+
+[package.metadata.bootimage]
+test-args = [
+    "-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio",
+    "-display", "none"
+]
+test-timeout = 300
+test-success-exit-code = 33         # (0x10 << 1) | 1

@@ -182,7 +182,6 @@ pub fn _print(args: Arguments) {
 }
 
 
-
 // Test write `Hello World`
 // pub fn print_something() {
 //     use core::fmt::Write;
