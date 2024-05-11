@@ -52,7 +52,7 @@ Instead of writing our own bootloader, which is a project on its own, we use the
 </details>
 
 
-# Source Inspirations
+# Source Inspirations & How to contribute?
 
 Please, consider reading through these documentations is you're plan to contribute
 
