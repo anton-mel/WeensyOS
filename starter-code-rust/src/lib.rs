@@ -1,5 +1,13 @@
+// Compiled As WeenseOS Library
+// Current Implementation Includes
+// 1. VGA text mode, println and print
+// 2. Panic supported by VGA buffer
+// 3. Testable Trait Set-up
+// 4. Interrupts
+
 #![no_std]
 #![cfg_attr(test, no_main)]
+#![feature(abi_x86_interrupt)]
 #![feature(custom_test_frameworks)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
@@ -8,7 +16,17 @@ use core::panic::PanicInfo;
 
 // Import Modules Here
 pub mod vga_buffer;
+pub mod interrupts;
 pub mod serial;             // terminal route
+pub mod gdt;
+
+
+pub fn init() {
+    // Interrupts
+    gdt::init();
+    interrupts::init_idt();
+}
+
 
 // Unfortunately, shutting down is relatively complex because it requires 
 // implementing support for either the APM or ACPI power management standard.
@@ -66,6 +84,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 #[cfg(test)]
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+    init();
     test_main();
     loop {}
 }

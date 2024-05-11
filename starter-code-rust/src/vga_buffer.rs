@@ -75,6 +75,7 @@ pub struct Writer {
 }
 
 lazy_static! {
+    // Global default WRITER for println!
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Yellow, Color::Black),
@@ -175,7 +176,7 @@ macro_rules! println {
 // prefixed the invocations of the print! macro with $crate too. This ensures 
 // that we don’t need to import the print! macro too if we only want to use println.
 
-#[doc(hidden)] // hide from the documentation
+#[doc(hidden)]
 pub fn _print(args: Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
