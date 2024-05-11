@@ -4,9 +4,9 @@ Project is currently under development. For any questions, please reach out via 
 
 WeensyOS is a tiny kernel that can run on bare-metal x86-64 machines (for project 4/5 @ Yale, QEMU's emulated CPUs), developed by Eddie Kohler. The initial state of the kernel contains code for bootstrapping kernel, handling exceptions/syscalls, executing user-level program, and helper functions for your CPSC 323 exercises.
 
-This OS is written in Rust @ Frog (Yale) `ssh yournetid@frog.zoo.cs.yale.edu` [host]. Note: All Ubuntu Nodes do NOT have qemu-system-x86_64. Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/.
+This OS is written in Rust @ Frog (Yale) `ssh yournetid@frog.zoo.cs.yale.edu` [host].
 
-For [host]: CPU-arch: x86_64, Operating System: Linux (Fedora), Application binary interface: GNU
+CPU-arch: x86_64, Operating System: Linux (Fedora), Application binary interface: GNU.
  
 By compiling for our host triple, the Rust compiler and the linker assume that there is an underlying operating system such as Linux or Windows that uses the C runtime by default, which causes the linker errors. So, to avoid the linker errors, we compile for our own environment ```x86_64-weensyos.json``` with no underlying operating system. [look how to build]
 
@@ -57,6 +57,7 @@ Please, consider reading through these documentations is you're plan to contribu
 
 https://os.phil-opp.com/, https://www.theseus-os.com/, https://zoo.cs.yale.edu/classes/cs323/323/proj5/starter-code/
 
+Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/.
 
 # Preview
 
