@@ -22,7 +22,7 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 
 # How to test
 
-Current implementation does not include any test cases, but ptovides a simple `cargo test` terminal assertions template.
+Current implementation does not include any test cases, but we still provide a simple `cargo test` terminal setup.
 
 
 ### Run QEMU-Display
