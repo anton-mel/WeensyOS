@@ -22,11 +22,19 @@ pub mod gdt;
 
 
 pub fn init() {
-    // Interrupts
     gdt::init();
     interrupts::init_idt();
+    // Initialize the 8259 PIC interrups
+    unsafe { interrupts::PICS.lock().initialize() };
+    x86_64::instructions::interrupts::enable(); 
 }
 
+// energy-efficient endless loop
+pub fn hlt_loop() -> ! {
+    loop {
+        x86_64::instructions::hlt();
+    }
+}
 
 // Unfortunately, shutting down is relatively complex because it requires 
 // implementing support for either the APM or ACPI power management standard.
@@ -77,7 +85,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("[failed]\n");
     serial_println!("Error: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
-    loop {}
+    hlt_loop();
 }
 
 /// Entry point for `cargo test`
@@ -86,7 +94,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 pub extern "C" fn _start() -> ! {
     init();
     test_main();
-    loop {}
+    hlt_loop();
 }
 
 #[cfg(test)]

@@ -16,9 +16,12 @@
 /////////////////////////////////////////
 
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
+use crate::{gdt, println, print};
 use lazy_static::lazy_static;
-use crate::{gdt, println};
+use pic8259::ChainedPics;
+use spin;
 
+// IDT vector table
 lazy_static! {
     static ref IDT: InterruptDescriptorTable = {
         let mut idt = InterruptDescriptorTable::new();
@@ -28,9 +31,15 @@ lazy_static! {
                 .set_handler_fn(double_fault_handler)
                 .set_stack_index(gdt::DOUBLE_FAULT_IST_INDEX);
         }
+
+        // PIC Interrupts
+        idt[InterruptIndex::Timer.as_usize()].set_handler_fn(timer_interrupt_handler);
+        idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);
+
         idt
     };
 }
+
 // #[repr(C)]
 // pub struct InterruptDescriptorTable {
 //     pub divide_by_zero: Entry<HandlerFunc>,
@@ -41,7 +50,7 @@ lazy_static! {
 //     pub bound_range_exceeded: Entry<HandlerFunc>,
 //     pub invalid_opcode: Entry<HandlerFunc>,
 //     pub device_not_available: Entry<HandlerFunc>,
-//     pub double_fault: Entry<HandlerFuncWithErrCode>,
+//     pub double_fault: Entry<HandlerFuncWithErrCode>,       ----------- Implemented
 //     pub invalid_tss: Entry<HandlerFuncWithErrCode>,
 //     pub segment_not_present: Entry<HandlerFuncWithErrCode>,
 //     pub stack_segment_fault: Entry<HandlerFuncWithErrCode>,
@@ -73,12 +82,93 @@ extern "x86-interrupt" fn double_fault_handler(
 }
 
 
+//                      ____________                          ____________
+// Real Time Clock --> |            |   Timer -------------> |            |
+// ACPI -------------> |            |   Keyboard-----------> |            |      _____
+// Available --------> | Secondary  |----------------------> | Primary    |     |     |
+// Available --------> | Interrupt  |   Serial Port 2 -----> | Interrupt  |---> | CPU |
+// Mouse ------------> | Controller |   Serial Port 1 -----> | Controller |     |_____|
+// Co-Processor -----> |            |   Parallel Port 2/3 -> |            |
+// Primary ATA ------> |            |   Floppy disk -------> |            |
+// Secondary ATA ----> |____________|   Parallel Port 1----> |____________|
+
+// PIC detected by the MCU
+pub const PIC_1_OFFSET: u8 = 32;
+pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
+
+// (Re)mmap the signal
+#[derive(Debug, Clone, Copy)]
+#[repr(u8)]
+pub enum InterruptIndex {
+    Timer = PIC_1_OFFSET,
+    Keyboard,
+}
+
+pub static PICS: spin::Mutex<ChainedPics> =
+    spin::Mutex::new(unsafe { 
+        ChainedPics::new(PIC_1_OFFSET, PIC_2_OFFSET) 
+    });
+
+impl InterruptIndex {
+    fn as_u8(self) -> u8 {
+        self as u8
+    }
+
+    fn as_usize(self) -> usize {
+        usize::from(self.as_u8())
+    }
+}
+
+extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
+    print!(".");
+    unsafe {
+        PICS.lock().notify_end_of_interrupt(InterruptIndex::Timer.as_u8());
+    }
+}
+
+
+extern "x86-interrupt" fn keyboard_interrupt_handler(
+    _stack_frame: InterruptStackFrame)
+{
+    use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
+    use spin::Mutex;
+    use x86_64::instructions::port::Port;
+
+    lazy_static! {
+        static ref KEYBOARD: Mutex<Keyboard<layouts::Us104Key, ScancodeSet1>> =
+            Mutex::new(Keyboard::new(layouts::Us104Key, ScancodeSet1,
+                HandleControl::Ignore)
+            );
+    }
+
+    // Query the keyboard controller to find out which key was pressed
+    let mut keyboard = KEYBOARD.lock();
+    let mut port = Port::new(0x60);
+
+    // https://en.wikipedia.org/wiki/Scancode
+    let scancode: u8 = unsafe { port.read() };
+    if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
+        if let Some(key) = keyboard.process_keyevent(key_event) {
+            match key {
+                DecodedKey::Unicode(character) => print!("{}", character),
+                DecodedKey::RawKey(key) => print!("{:?}", key),
+            }
+        }
+    }
+
+    unsafe {
+        PICS.lock()
+            .notify_end_of_interrupt(InterruptIndex::Keyboard.as_u8());
+    }
+}
+
+
 // -------------------------------------------------------------
+// Random Interrupt Test Cases
 
 #[cfg(test)]
 use crate::{serial_print, serial_println};
 
-// Random Interrupt test cases
 #[test_case]
 fn test_breakpoint_exception() {
     serial_print!("test_breakpoint_exception...");

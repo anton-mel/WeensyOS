@@ -30,17 +30,12 @@ pub extern "C" fn _start() {
     // Handle Launch Here
     weensyos::init();
 
-    unsafe {
-        // trigger a page fault
-        *(0xdeadbeef as *mut u8) = 42;
-    };
-
     // Run Public Tests
     #[cfg(test)]
     test_main();
 
     println!("It did not crash!");
-    loop {}
+    weensyos::hlt_loop();
 }
 
 
@@ -50,7 +45,7 @@ pub extern "C" fn _start() {
 fn panic(info: &PanicInfo) -> ! {
     // Panic in Run Mode prints
     println!("{}", info);
-    loop {}
+    weensyos::hlt_loop();
 }
 #[cfg(test)]
 #[panic_handler]
