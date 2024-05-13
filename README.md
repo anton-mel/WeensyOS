@@ -1,7 +1,5 @@
 # WeesyOS in Rust
 
-Project is currently under development. For any questions, please reach out via anton.melnychuk@yale.edu.
-
 WeensyOS is a tiny kernel that can run on bare-metal x86-64 machines (for project 4/5 @ Yale, QEMU's emulated CPUs), developed by Professor Eddie Kohler. The initial state of the kernel contains code for bootstrapping kernel, handling exceptions/syscalls, executing user-level program, and helper functions for your CPSC 323 exercises.
 
 This OS is written in Rust @ Frog VNC - Virtual Machine (Yale) `ssh yournetid@frog.zoo.cs.yale.edu`
@@ -72,3 +70,5 @@ Current version of WeensyOS looks like this:
 <p align="center">
     <img width="1006" alt="image" src="https://github.com/anton-mel/WeensyOS/assets/78281795/34bb102e-112d-4cae-bc05-e5956017bc96">
 </p>
+
+Project is currently under development. For any questions, please reach out via anton.melnychuk@yale.edu.
