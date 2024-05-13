@@ -1,18 +1,16 @@
 # WeesyOS in Rust
 
-Project is currently under development. For any questions, please reach out via anton.melnychuk@yale.edu.
-
-WeensyOS is a tiny kernel that can run on bare-metal x86-64 machines (for project 4/5 @ Yale, QEMU's emulated CPUs), developed by Eddie Kohler. The initial state of the kernel contains code for bootstrapping kernel, handling exceptions/syscalls, executing user-level program, and helper functions for your CPSC 323 exercises.
+WeensyOS is a tiny kernel that can run on bare-metal x86-64 machines (QEMU's emulated CPUs), developed by Professor Eddie Kohler. The initial state of the kernel contains code for bootstrapping kernel, handling exceptions/syscalls, executing user-level program, and helper functions for your CPSC 323 exercises.
 
 This OS is written in Rust @ Frog VNC - Virtual Machine (Yale) `ssh yournetid@frog.zoo.cs.yale.edu`
 https://docs.google.com/document/d/1tmYkB2v8LV6mo7BImCbWP3qO5Y_ZlgZIx0r5luZnUP0/edit?usp=sharing
 
-<p align="center">
-    CPU-arch: x86_64, Operating System: Linux (Fedora), Application binary interface: GNU
-</p>
+> CPU-arch: x86_64, Operating System: Linux (Fedora), Application binary interface: GNU
  
-By compiling for our host triple, the Rust compiler and the linker assume that there is an underlying operating system such as Linux (Frog Node) that uses the C runtime by default, which causes the linker errors. So, to avoid the linker errors, we compile for our own environment ```x86_64-weensyos.json``` with no underlying operating system [look how to build].
+By compiling for our host triple, the Rust compiler and the linker assume that there is an underlying operating system such as Linux (Frog Node) that uses the C runtime by default, which causes the linker errors. So, to avoid the linker errors, we compile for our own environment ```x86_64-weensyos.json``` with no underlying operating system *[look how to build]*.
 
+> [!NOTE]
+> Project is currently under development. For any questions, please reach out via <a href="mailto:anton.melnychuk@yale.edu">anton.melnychuk@yale.edu</a>.
 
 # How to build
 
@@ -27,7 +25,7 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 
 ### Run QEMU-Display
 
-Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. I use ```cargo run -- -nographic``` for zoo I/O only. Note: if you are stuck in the loop and cannot exit QEMU, try to `pkill qemu` from another terminal, we will implement quit commands soon. You can also run QEMU directly via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can actually enable graphic if you work localy on your PC, no remote).
+Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. EDIT: Should work with just ```cargo run```. Note: if you are stuck in the loop and cannot exit QEMU (press `q` for `quit`), try to `pkill qemu` from another terminal. You can also run QEMU directly via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can also enable QEMU graphic display if you work locally).
 
 
 # How to test
@@ -67,8 +65,11 @@ Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/
 
 # Preview
 
-Current version of WeensyOS looks like this:
+> [!NOTE]
+> The project is currently focused on developing the kernel's paging.
 
 <p align="center">
-    <img width="1180" alt="Screenshot at May 12 02-31-51" src="https://github.com/anton-mel/WeensyOS/assets/78281795/6080569e-5a1a-4861-9b2d-15dae0459d59">
+    <img width="1006" alt="image" src="https://github.com/anton-mel/WeensyOS/assets/78281795/34bb102e-112d-4cae-bc05-e5956017bc96">
 </p>
+
+
