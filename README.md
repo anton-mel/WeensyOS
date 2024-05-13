@@ -71,4 +71,6 @@ Current version of WeensyOS looks like this:
     <img width="1006" alt="image" src="https://github.com/anton-mel/WeensyOS/assets/78281795/34bb102e-112d-4cae-bc05-e5956017bc96">
 </p>
 
-Project is currently under development. For any questions, please reach out via anton.melnychuk@yale.edu.
+<div style="background-color:#f0f0f0; border-radius:10px; padding:10px;">
+    Project is currently under development. For any questions, please reach out via <a href="mailto:anton.melnychuk@yale.edu">anton.melnychuk@yale.edu</a>.
+</div>
