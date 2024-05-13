@@ -11,6 +11,8 @@ https://docs.google.com/document/d/1tmYkB2v8LV6mo7BImCbWP3qO5Y_ZlgZIx0r5luZnUP0/
  
 By compiling for our host triple, the Rust compiler and the linker assume that there is an underlying operating system such as Linux (Frog Node) that uses the C runtime by default, which causes the linker errors. So, to avoid the linker errors, we compile for our own environment ```x86_64-weensyos.json``` with no underlying operating system [look how to build].
 
+> [!NOTE]
+> Project is currently under development. For any questions, please reach out via <a href="mailto:anton.melnychuk@yale.edu">anton.melnychuk@yale.edu</a>.
 
 # How to build
 
@@ -70,6 +72,3 @@ Current version of WeensyOS looks like this:
 <p align="center">
     <img width="1006" alt="image" src="https://github.com/anton-mel/WeensyOS/assets/78281795/34bb102e-112d-4cae-bc05-e5956017bc96">
 </p>
-
-> [!NOTE]
-> Project is currently under development. For any questions, please reach out via <a href="mailto:anton.melnychuk@yale.edu">anton.melnychuk@yale.edu</a>.
