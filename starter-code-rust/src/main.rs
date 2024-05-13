@@ -25,10 +25,20 @@ use weensyos::println;
 // entry point with our own _start everywhere.
 #[no_mangle] // don't mangle (cryptic) the name
 pub extern "C" fn _start() {
-    println!("Hello World{}", "!");
+    println!("Press `{}` to exit.", "q");
 
     // Handle Launch Here
     weensyos::init();
+
+    // Check VA mmap
+    // I did not realize that bootloader package
+    // automatically handles it already. Need to
+    // fix this tomorrow morning. Check how to disable
+    // or just copy booting part only inside
+
+    use x86_64::registers::control::Cr3;
+    let (level_4_page_table, _) = Cr3::read();
+    println!("Level 4 page table at: {:?}", level_4_page_table.start_address());
 
     // Run Public Tests
     #[cfg(test)]

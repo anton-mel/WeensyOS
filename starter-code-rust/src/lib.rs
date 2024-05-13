@@ -4,6 +4,7 @@
 // 2. Panic supported by VGA buffer
 // 3. Testable Trait Set-up
 // 4. Interrupts
+// 5. Shutdown
 
 #![no_std]
 #![cfg_attr(test, no_main)]
@@ -17,7 +18,7 @@ use core::panic::PanicInfo;
 // Import Modules Here
 pub mod vga_buffer;
 pub mod interrupts;
-pub mod serial;             // terminal route
+pub mod serial;             // terminal tunnel
 pub mod gdt;
 
 
@@ -26,7 +27,7 @@ pub fn init() {
     interrupts::init_idt();
     // Initialize the 8259 PIC interrups
     unsafe { interrupts::PICS.lock().initialize() };
-    x86_64::instructions::interrupts::enable(); 
+    x86_64::instructions::interrupts::enable();
 }
 
 // energy-efficient endless loop
@@ -40,6 +41,7 @@ pub fn hlt_loop() -> ! {
 // implementing support for either the APM or ACPI power management standard.
 // Luckily, QEMU supports a special isa-debug-exit device, which provides 
 // an easy way to exit QEMU from the guest system.
+// https://wiki.osdev.org/APM https://wiki.osdev.org/ACPI
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum QemuExitCode {
@@ -48,16 +50,13 @@ pub enum QemuExitCode {
 }
 
 pub fn exit_qemu(exit_code: QemuExitCode) {
-    use x86_64::instructions::port::Port;
+    use x86_64::instructions::port::PortWriteOnly;
 
     const PORT_EXIT: u16 = 0xf4;
-    const PORT_MAGIC: u16 = 0x10;
 
     unsafe {
-        let mut port = Port::<u32>::new(PORT_EXIT);
+        let mut port = PortWriteOnly::new(PORT_EXIT);
         port.write(exit_code as u32);
-        let mut port = Port::<u32>::new(PORT_MAGIC);
-        port.write(0x10);
     }
 }
 

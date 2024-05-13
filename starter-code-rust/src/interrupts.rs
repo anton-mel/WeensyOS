@@ -16,10 +16,12 @@
 /////////////////////////////////////////
 
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
+use x86_64::structures::idt::PageFaultErrorCode;
 use crate::{QemuExitCode, exit_qemu};
 use crate::{gdt, println, print};
 use lazy_static::lazy_static;
 use pic8259::ChainedPics;
+use crate::hlt_loop;
 use spin;
 
 // IDT vector table
@@ -27,6 +29,7 @@ lazy_static! {
     static ref IDT: InterruptDescriptorTable = {
         let mut idt = InterruptDescriptorTable::new();
         idt.breakpoint.set_handler_fn(breakpoint_handler);
+        
         unsafe {
             idt.double_fault
                 .set_handler_fn(double_fault_handler)
@@ -36,6 +39,9 @@ lazy_static! {
         // PIC Interrupts
         idt[InterruptIndex::Timer.as_usize()].set_handler_fn(timer_interrupt_handler);
         idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);
+
+        // Paging && VA/PA
+        idt.page_fault.set_handler_fn(page_fault_handler);
 
         idt
     };
@@ -122,7 +128,6 @@ impl InterruptIndex {
 
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
     // print!(".");
-
     unsafe {
         PICS.lock().notify_end_of_interrupt(InterruptIndex::Timer.as_u8());
     }
@@ -155,12 +160,10 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
                 DecodedKey::RawKey(key) => print!("{:?}", key),
                 DecodedKey::Unicode(character) => {
                     if character == 'q' || character == 'Q' {
-                        // 'q' key pressed, perform actions
-                        println!("Ending Session...");
                         exit_qemu(QemuExitCode::Success);
+                    } else {
+                        print!("{}", character);
                     }
-
-                    print!("{}", character);
                 }
             }
         }
@@ -170,6 +173,23 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
         PICS.lock()
             .notify_end_of_interrupt(InterruptIndex::Keyboard.as_u8());
     }
+}
+
+// Pagefault
+extern "x86-interrupt" fn page_fault_handler(
+    stack_frame: InterruptStackFrame,
+    error_code: PageFaultErrorCode,
+) {
+    // The CR2 register is automatically set by the CPU on a page fault and 
+    // contains the accessed virtual address that caused the page fault.
+    use x86_64::registers::control::Cr2;
+
+    println!("EXCEPTION: PAGE FAULT");
+    println!("Accessed Address: {:?}", Cr2::read());
+    println!("Error Code: {:?}", error_code);
+    println!("{:#?}", stack_frame);
+
+    hlt_loop();
 }
 
 
