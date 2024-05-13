@@ -16,6 +16,7 @@
 /////////////////////////////////////////
 
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
+use crate::{QemuExitCode, exit_qemu};
 use crate::{gdt, println, print};
 use lazy_static::lazy_static;
 use pic8259::ChainedPics;
@@ -120,7 +121,8 @@ impl InterruptIndex {
 }
 
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    print!(".");
+    // print!(".");
+
     unsafe {
         PICS.lock().notify_end_of_interrupt(InterruptIndex::Timer.as_u8());
     }
@@ -150,8 +152,16 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
     if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
         if let Some(key) = keyboard.process_keyevent(key_event) {
             match key {
-                DecodedKey::Unicode(character) => print!("{}", character),
                 DecodedKey::RawKey(key) => print!("{:?}", key),
+                DecodedKey::Unicode(character) => {
+                    if character == 'q' || character == 'Q' {
+                        // 'q' key pressed, perform actions
+                        println!("Ending Session...");
+                        exit_qemu(QemuExitCode::Success);
+                    }
+
+                    print!("{}", character);
+                }
             }
         }
     }

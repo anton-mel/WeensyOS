@@ -50,9 +50,14 @@ pub enum QemuExitCode {
 pub fn exit_qemu(exit_code: QemuExitCode) {
     use x86_64::instructions::port::Port;
 
+    const PORT_EXIT: u16 = 0xf4;
+    const PORT_MAGIC: u16 = 0x10;
+
     unsafe {
-        let mut port = Port::new(0xf4);
+        let mut port = Port::<u32>::new(PORT_EXIT);
         port.write(exit_code as u32);
+        let mut port = Port::<u32>::new(PORT_MAGIC);
+        port.write(0x10);
     }
 }
 
