@@ -5,14 +5,15 @@ authors = ["Anton Melnychuk <anton.melnychuk@yale.edu>"]
 edition = "2018"
 
 [dependencies]
+bootloader = { version = "0.9.9", features = ["map_physical_memory"] }
 lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
 pc-keyboard = "0.5.0"
-bootloader = "0.9.8"
 uart_16550 = "0.2.0"
 volatile = "0.2.6"
 pic8259 = "0.10.1"
 x86_64 = "0.14.2"
 spin = "0.5.2"
+log = "0.4.17"
 
 [package.metadata.bootimage]
 test-args = [
@@ -30,6 +31,7 @@ run-args = [
     "-usbdevice", "tablet",
     "-display", "curses",
     "-full-screen",
+    "-serial", "file:.logs"
 ]
 
 [[test]]

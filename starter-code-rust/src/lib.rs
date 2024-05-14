@@ -16,17 +16,16 @@
 use core::panic::PanicInfo;
 
 // Import Modules Here
-pub mod vga_buffer;
-pub mod interrupts;
-pub mod serial;             // terminal tunnel
-pub mod gdt;
+pub mod kernel;
+pub mod aux;
 
 
 pub fn init() {
-    gdt::init();
-    interrupts::init_idt();
+    aux::init_log();
+    kernel::gdt::init();
+    kernel::interrupts::init_idt();
     // Initialize the 8259 PIC interrups
-    unsafe { interrupts::PICS.lock().initialize() };
+    unsafe { kernel::interrupts::PICS.lock().initialize() };
     x86_64::instructions::interrupts::enable();
 }
 

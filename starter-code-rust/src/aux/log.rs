@@ -3,6 +3,13 @@ use log::Log;
 
 use crate::{serial_print, serial_println};
 
+// use log::{debug, ...}
+// debug!("{}", message);
+// error!("{}", message);
+// info!("{}", message);
+// warn!("{}", message);
+// trace!("{}", message);
+
 struct Logger;
 
 impl Log for Logger {
@@ -12,12 +19,13 @@ impl Log for Logger {
         if !self.enabled(record.metadata()) { return; }
 
         match record.level() {
-            Level::Debug => serial_print!("\x1b[1;32m debug:\x1b[0m "),
-            Level::Error => serial_print!("\x1b[1;31m error:\x1b[0m "),
-            Level::Info => serial_print!("\x1b[1;36m info:\x1b[0m "),
-            Level::Warn => serial_print!("\x1b[1;33m warn:\x1b[0m "),
-            Level::Trace => serial_print!("\x1b[1;37m trace:\x1b[0m "),
+            Level::Debug => serial_print!("debug: "),
+            Level::Error => serial_print!("error: "),
+            Level::Info => serial_print!("info: "),
+            Level::Warn => serial_print!("warn: "),
+            Level::Trace => serial_print!("trace: "),
         }
+        
         serial_println!("{}", record.args());
     }
 
