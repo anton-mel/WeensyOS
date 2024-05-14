@@ -15,30 +15,43 @@
 #![test_runner(weensyos::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-use core::panic::PanicInfo;
 use weensyos::println;
+use bootloader::{entry_point, BootInfo};
+use core::panic::PanicInfo;
+
 
 // Rust only has a very minimal runtime, which takes care of some 
 // small things such as setting up stack overflow guards or printing 
 // a backtrace on panic. Still, it calls main, but our OS does not have 
 // acccess to the Rust runtime, so we overwrite the operating system 
 // entry point with our own _start everywhere.
-#[no_mangle] // don't mangle (cryptic) the name
-pub extern "C" fn _start() {
-    println!("Press `{}` to exit.", "q");
+entry_point!(kernel_main);
+
+fn kernel_main(boot_info: &'static BootInfo) -> ! {
+    use weensyos::kernel::memory::{self, BootInfoFrameAllocator};
+    use x86_64::{structures::paging::Page, VirtAddr};
 
     // Handle Launch Here
+    println!("Press `{}` to exit.", "q");
     weensyos::init();
 
-    // Check VA mmap
-    // I did not realize that bootloader package
-    // automatically handles it already. Need to
-    // fix this tomorrow morning. Check how to disable
-    // or just copy booting part only inside
 
-    use x86_64::registers::control::Cr3;
-    let (level_4_page_table, _) = Cr3::read();
-    println!("Level 4 page table at: {:?}", level_4_page_table.start_address());
+    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    let mut mapper = unsafe { memory::init(phys_mem_offset) };
+    let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
+
+    // map an unused page
+    let page = Page::containing_address(VirtAddr::new(0xdeadbeaf000));
+    memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
+
+    // write the string `New!` to the screen through the new mapping
+    let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
+    unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e) };
+
+
+    // Check logging
+    use log::warn;
+    warn!("works!");
 
     // Run Public Tests
     #[cfg(test)]
