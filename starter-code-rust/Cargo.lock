@@ -36,10 +36,31 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustversion"
-version = "1.0.16"
+name = "log"
+version = "0.4.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "092474d1a01ea8278f69e6a358998405fae5b8b963ddaeb2b0b04a128bf1dfb0"
+checksum = "90ed8c1e510134f979dbc4f070f87d4313098b704861a105fe34231c70a3901c"
+
+[[package]]
+name = "pc-keyboard"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c6f2d937e3b8d63449b01401e2bae4041bc9dd1129c2e3e0d239407cf6635ac"
+
+[[package]]
+name = "pic8259"
+version = "0.10.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cb844b5b01db1e0b17938685738f113bfc903846f18932b378bc0eabfa40e194"
+dependencies = [
+ "x86_64",
+]
+
+[[package]]
+name = "rustversion"
+version = "1.0.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "955d28af4278de8121b7ebeb796b6a45735dc01436d898801014aced2773a3d6"
 
 [[package]]
 name = "spin"
@@ -76,6 +97,9 @@ version = "0.1.0"
 dependencies = [
  "bootloader",
  "lazy_static",
+ "log",
+ "pc-keyboard",
+ "pic8259",
  "spin",
  "uart_16550",
  "volatile 0.2.7",

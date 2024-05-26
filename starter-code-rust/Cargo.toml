@@ -2,7 +2,7 @@
 name = "weensyos"
 version = "0.1.0"
 authors = ["Anton Melnychuk <anton.melnychuk@yale.edu>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 bootloader = { version = "0.9.9", features = ["map_physical_memory"] }
@@ -31,7 +31,7 @@ run-args = [
     "-usbdevice", "tablet",
     "-display", "curses",
     "-full-screen",
-    "-serial", "file:.logs"
+    "-serial", "file:log.txt"
 ]
 
 [[test]]
