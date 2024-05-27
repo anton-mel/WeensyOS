@@ -69,7 +69,7 @@ Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/
 > The project is currently focused on developing the kernel's paging.
 
 <p align="center">
-    ![Screenshot from 2024-05-27 04-17-37](https://github.com/anton-mel/WeensyOS/assets/78281795/456b7bda-2f50-4a21-afbb-0b89b33de9e9)
+    ![image](https://github.com/anton-mel/WeensyOS/assets/78281795/4c10341d-d305-4c8b-9648-a9105c68c593)
 </p>
 
 
