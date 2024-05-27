@@ -4,9 +4,18 @@ version = "0.1.0"
 authors = ["Anton Melnychuk <anton.melnychuk@yale.edu>"]
 edition = "2021"
 
+[[test]]
+name = "should_panic"
+harness = false
+
+[[test]]
+name = "stack_overflow"
+harness = false
+
 [dependencies]
 bootloader = { version = "0.9.9", features = ["map_physical_memory"] }
 lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+linked_list_allocator = "0.9.0"
 pc-keyboard = "0.5.0"
 uart_16550 = "0.2.0"
 volatile = "0.2.6"
@@ -15,12 +24,21 @@ x86_64 = "0.14.2"
 spin = "0.5.2"
 log = "0.4.17"
 
+[dependencies.crossbeam-queue]
+version = "0.2.1"
+default-features = false
+features = ["alloc"]
+
+[dependencies.conquer-once]
+version = "0.2.0"
+default-features = false
+
+[dependencies.futures-util]
+version = "0.3.4"
+default-features = false
+features = ["alloc"]
+
 [package.metadata.bootimage]
-test-args = [
-    "-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", 
-    "-serial", "stdio",
-    "-display", "none"
-]
 test-timeout = 300                  # in seconds
 test-success-exit-code = 33         # (0x10 << 1) | 1
 # Run qemu auto-configurations
@@ -29,15 +47,7 @@ run-args = [
     "-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", 
     "-usb",
     "-usbdevice", "tablet",
-    "-display", "curses",
-    "-full-screen",
+    # "-display", "curses",             // uncomment here for console display 
+    # "-full-screen",
     "-serial", "file:log.txt"
 ]
-
-[[test]]
-name = "should_panic"
-harness = false
-
-[[test]]
-name = "stack_overflow"
-harness = false

@@ -1,39 +1,38 @@
-// Compiled As WeenseOS Library
-// Current Implementation Includes
-// 1. VGA text mode, println and print
-// 2. Panic supported by VGA buffer
-// 3. Testable Trait Set-up
-// 4. Interrupts
-// 5. Shutdown
-
 #![no_std]
 #![cfg_attr(test, no_main)]
-#![feature(abi_x86_interrupt)]
 #![feature(custom_test_frameworks)]
+#![feature(abi_x86_interrupt)]
+#![feature(const_mut_refs)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
+
+extern crate alloc;
 
 use core::panic::PanicInfo;
 
 // Import Modules Here
-pub mod kernel;
+pub mod allocator;
+pub mod gdt;
+pub mod interrupts;
+pub mod memory;
+pub mod serial;
+pub mod task;
+pub mod vga_buffer;
 pub mod aux;
 
 
 pub fn init() {
+    gdt::init();
     aux::init_log();
-    kernel::gdt::init();
-    kernel::interrupts::init_idt();
+    interrupts::init_idt();
     // Initialize the 8259 PIC interrups
-    unsafe { kernel::interrupts::PICS.lock().initialize() };
+    unsafe { interrupts::PICS.lock().initialize() };
     x86_64::instructions::interrupts::enable();
 }
 
-// energy-efficient endless loop
 pub fn hlt_loop() -> ! {
-    loop {
-        x86_64::instructions::hlt();
-    }
+    // use energy efficient loop
+    loop { x86_64::instructions::hlt(); }
 }
 
 // Unfortunately, shutting down is relatively complex because it requires 
@@ -59,7 +58,7 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
     }
 }
 
-// Set-up test trait
+/// Set-up test trait
 pub trait Testable {
     fn run(&self) -> ();
 }
@@ -76,6 +75,7 @@ where
     }
 }
 
+/// Configurations for Cargo Test
 pub fn test_runner(tests: &[&dyn Testable]) {
     serial_println!("Running {} tests", tests.len());
     for test in tests {
@@ -87,14 +87,20 @@ pub fn test_runner(tests: &[&dyn Testable]) {
 pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("[failed]\n");
     serial_println!("Error: {}\n", info);
-    exit_qemu(QemuExitCode::Failed);
+    exit_qemu(QemuExitCode::Failed);    
     hlt_loop();
 }
 
 /// Entry point for `cargo test`
 #[cfg(test)]
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+use bootloader::{entry_point, BootInfo};
+
+#[cfg(test)]
+entry_point!(test_kernel_main);
+
+/// Entry point for `cargo xtest`
+#[cfg(test)]
+fn test_kernel_main(_boot_info: &'static BootInfo) -> ! {
     init();
     test_main();
     hlt_loop();

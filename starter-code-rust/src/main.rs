@@ -15,10 +15,12 @@
 #![test_runner(weensyos::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+extern crate alloc;
+
 use weensyos::println;
+use weensyos::task::{executor::Executor, keyboard, Task};
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-
 
 // Rust only has a very minimal runtime, which takes care of some 
 // small things such as setting up stack overflow guards or printing 
@@ -28,37 +30,27 @@ use core::panic::PanicInfo;
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
-    use weensyos::kernel::memory::{self, BootInfoFrameAllocator};
-    use x86_64::{structures::paging::Page, VirtAddr};
-
-    // Handle Launch Here
-    println!("Press `{}` to exit.", "q");
+    use weensyos::allocator;
+    use weensyos::memory::{self, BootInfoFrameAllocator};
+    use x86_64::VirtAddr;
+    
+    println!("Hello World{}", "!");
     weensyos::init();
-
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
     let mut mapper = unsafe { memory::init(phys_mem_offset) };
     let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
 
-    // map an unused page
-    let page = Page::containing_address(VirtAddr::new(0xdeadbeaf000));
-    memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
+    allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
-    // write the string `New!` to the screen through the new mapping
-    let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
-    unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e) };
-
-
-    // Check logging
-    use log::warn;
-    warn!("works!");
-
-    // Run Public Tests
+    // DevTests
     #[cfg(test)]
     test_main();
 
-    println!("It did not crash!");
-    weensyos::hlt_loop();
+    let mut executor = Executor::new();
+    executor.spawn(Task::new(example_task()));
+    executor.spawn(Task::new(keyboard::keypresses()));
+    executor.run();
 }
 
 
@@ -75,4 +67,23 @@ fn panic(info: &PanicInfo) -> ! {
 fn panic(info: &PanicInfo) -> ! {
     // Panic in Test Mode quits
     weensyos::test_panic_handler(info)
+}
+
+
+///////////////////////////////////////////
+///
+/// Some simple execution task
+
+async fn async_number() -> u32 {
+    42
+}
+
+async fn example_task() {
+    let number = async_number().await;
+    println!("async number: {}", number);
+}
+
+#[test_case]
+fn trivial_assertion() {
+    assert_eq!(1, 1);
 }
