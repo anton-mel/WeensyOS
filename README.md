@@ -60,4 +60,13 @@ Please, consider reading through these documentations is you plan to contribute:
 
 Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/ or develop locally.
 
+# Preview
+
+<div align="center">
+   <img width="1660" alt="image" src="https://github.com/anton-mel/WeensyOS/assets/78281795/cc2ce598-adad-4647-a982-ce4ee05e81cc">
+</div>
+
+
+
+
 
