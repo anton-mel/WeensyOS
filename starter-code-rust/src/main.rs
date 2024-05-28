@@ -32,9 +32,11 @@ entry_point!(kernel_main);
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     use weensyos::allocator;
     use weensyos::memory::{self, BootInfoFrameAllocator};
+    // use weensyos::visual::{display_physical_memory, display_virtual_memory};
     use x86_64::VirtAddr;
     
-    println!("Hello World{}", "!");
+    println!("press `{}` to exit or try typing below\n", "q");
+    println!("press `{}`, `{}`, `{}`, or `{}` to load program (in dev)\n", "a", "c", "m", "t");
     weensyos::init();
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
@@ -42,6 +44,11 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
+
+    /* display_physical_memory();
+    // Initialize a temporary page table to visualize memory
+    let page_table = unsafe { memory::init(phys_mem_offset) };
+    display_virtual_memory(&page_table, "Kernel"); */
 
     // DevTests
     #[cfg(test)]
@@ -60,7 +67,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 fn panic(info: &PanicInfo) -> ! {
     // Panic in Run Mode prints
     println!("{}", info);
-    weensyos::hlt_loop();
+    weensyos::fail();
 }
 #[cfg(test)]
 #[panic_handler]
@@ -75,12 +82,12 @@ fn panic(info: &PanicInfo) -> ! {
 /// Some simple execution task
 
 async fn async_number() -> u32 {
-    42
+    5
 }
 
 async fn example_task() {
     let number = async_number().await;
-    println!("async number: {}", number);
+    println!("async number: {} [ok]", number);
 }
 
 #[test_case]

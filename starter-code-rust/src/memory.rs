@@ -95,11 +95,3 @@ unsafe impl FrameAllocator<Size4KiB> for BootInfoFrameAllocator {
         frame
     }
 }
-
-pub fn _display_physical_memory() {
-    // Code to display physical memory
-}
-
-pub fn _display_virtual_memory(_pagetable: &PageTable, _name: &str) {
-    // Code to display virtual memory
-}
