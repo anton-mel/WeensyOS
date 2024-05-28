@@ -83,7 +83,7 @@ pub fn display_virtual_memory(pagetable: &OffsetPageTable<'_>, name: &str) {
     println!("{}", buffer);
 }
 
-fn virtual_memory_lookup(pagetable: &OffsetPageTable<'_>, addr: VirtAddr) -> Option<PageInfo> {
+fn virtual_memory_lookup(_pagetable: &OffsetPageTable<'_>, _addr: VirtAddr) -> Option<PageInfo> {
     // Simulate the lookup process, returning some PageInfo for the given address
     Some(PageInfo { owner: 0, refcount: 1 }) // Example return
 }

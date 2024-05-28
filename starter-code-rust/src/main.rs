@@ -32,7 +32,7 @@ entry_point!(kernel_main);
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     use weensyos::allocator;
     use weensyos::memory::{self, BootInfoFrameAllocator};
-    use weensyos::visual::{display_physical_memory, display_virtual_memory};
+    // use weensyos::visual::{display_physical_memory, display_virtual_memory};
     use x86_64::VirtAddr;
     
     println!("press `{}` to exit or try typing below\n", "q");
