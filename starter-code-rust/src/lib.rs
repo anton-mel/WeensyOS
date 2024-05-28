@@ -18,6 +18,7 @@ pub mod memory;
 pub mod serial;
 pub mod task;
 pub mod vga_buffer;
+pub mod visual;
 pub mod aux;
 
 
@@ -28,6 +29,14 @@ pub fn init() {
     // Initialize the 8259 PIC interrups
     unsafe { interrupts::PICS.lock().initialize() };
     x86_64::instructions::interrupts::enable();
+}
+
+pub fn fail() -> ! {
+    use crate::task::{executor::Executor, keyboard, Task};
+
+    let mut executor = Executor::new();
+    executor.spawn(Task::new(keyboard::keypresses()));
+    executor.run();
 }
 
 pub fn hlt_loop() -> ! {

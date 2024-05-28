@@ -1,4 +1,4 @@
-use crate::println;
+use crate::{print, println};
 use conquer_once::spin::OnceCell;
 use core::{
     pin::Pin,
@@ -67,36 +67,27 @@ impl Stream for ScancodeStream {
 }
 
 pub async fn keypresses() {
-    use crate::{exit_qemu, QemuExitCode};
-    use crate::task::loader::load_program;
+    use crate::{ exit_qemu, QemuExitCode };
 
     let mut scancodes = ScancodeStream::new();
     let mut keyboard = Keyboard::new(layouts::Us104Key, ScancodeSet1, HandleControl::Ignore);
 
     // https://en.wikipedia.org/wiki/Scancode
-
     while let Some(scancode) = scancodes.next().await {
         if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
             if let Some(key) = keyboard.process_keyevent(key_event) {
-                let result = match key {
-                    DecodedKey::RawKey(_) => Ok(()),
+                match key {
+                    DecodedKey::RawKey(key) => print!("{:?}", key),
                     DecodedKey::Unicode(c) => {
-                        match c {
-                            'a' => load_program("allocator"),
-                            'c' => load_program("alloctests"),
-                            'm' => load_program("malloc"),
-                            't' => load_program("test"),
-                            'q' => { 
-                                exit_qemu(QemuExitCode::Success);
-                                Ok(())
-                            },
-                            _ => Ok(()),      // print!(c);
+                        if c == 'a' || c == 'c' || c == 'm' || c == 't' {
+                            // Load the test
+                        } else if c == 'q' {
+                            exit_qemu(QemuExitCode::Success);
+                        } else {
+                            // Make sure the keyboard works
+                            print!("{}", c);
                         }
                     }
-                };
-
-                if let Err(e) = result {
-                    println!("Error loading program: {}", e);
                 }
             }
         }

@@ -47,7 +47,7 @@ run-args = [
     "-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", 
     "-usb",
     "-usbdevice", "tablet",
-    # "-display", "curses",             // uncomment here for console display 
-    # "-full-screen",
+    "-display", "curses",             
+    "-full-screen",
     "-serial", "file:log.txt"
 ]
