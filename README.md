@@ -9,44 +9,9 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 > [!NOTE]
 > This branch is currently closed and undergoing restructuring to more closely follow the assignment's purpose. You can still boot it. For any issues, please reach out via <a href="mailto:anton.melnychuk@yale.edu">anton.melnychuk@yale.edu</a>.
 
-# How to build
+# Source Code
 
-<details>
-<summary>Execute only once</summary>
-
-1. Get to the root: ```cd ./starter-code-rust```
-2. Change rust-toolchain: ```rustup override set nightly```, you might need ```rustup component add rust-src --toolchain nightly-aarch64-apple-darwin``` for MacOS-Darwin
-3. Build Target: ```cargo +nightly build --target x86_64-weensyos.json```
-4. Create Cargo Image: ```cargo bootimage``` (look for dependencies below). Image Created at `./target/x86_64-weensyos/debug/bootimage-weensyos.bin`
-</details>
-
-### Run QEMU-Display
-
-Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. EDIT: Should work with just ```cargo run```. Note: if you are stuck in the loop and cannot exit QEMU (press `q` for `quit`), try to `pkill qemu` from another terminal. You can also run QEMU directly via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can also enable QEMU graphic display if you work locally).
-
-
-# How to test
-
-Current implementation provides our own simple `cargo test` setup using standart `#[test_case]` implementation that outputs directly to the terminal via serial port and quits qemu. Public test cases for the project 4/5 will be implemented throuhgout WeensyOS growth.
-
-
-# Environment Configs
-
-Rust has three release channels: stable, beta, and nightly. We will need some experimental features that are only available on the nightly channel, so we need to install a nightly version of Rust.
-```rustc 1.80.0-nightly (87293c958 2024-05-08)```
-
-Instead of writing our own bootloader, which is a project on its own, we use the bootloader crate. This crate implements a basic BIOS bootloader without any C dependencies, just Rust and inline assembly. Read more how bootimage linking works here: https://github.com/rust-osdev/bootimage.
-
-<details>
-  <summary>Dependency List</summary>
-
-  1. `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
-  2. `cargo install bootimage`
-  3. `rustup component add llvm-tools-preview`
-  4. `apt install qemu-system-x86_64` for Linux or `brew isntall qemu` for MacOS
-  
-</details>
-
+This project comprises two branches: one for `rust-safe` (semisafe) code, serving as an example of a potentially correct OS implementation in Rust that aims to minimize the use of unsafe code, and another for `unsafe` code closely following C conventions, essential for its similarity to the WeensyOS pset. Please switch between them for further details.
 
 # Source Inspirations & How to contribute
 
