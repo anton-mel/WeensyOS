@@ -11,7 +11,7 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 
 # Source Code
 
-This project comprises two branches: one for `rust-safe` (semisafe) code, serving as an example of a potentially correct OS implementation in Rust that aims to minimize the use of unsafe code, and another for `unsafe` code closely following C conventions, essential for its similarity to the WeensyOS pset. Please switch between them for further details.
+This project comprises two branches: one for `rust-safe` (semisafe) code, serving as an example of a potentially correct OS implementation in Rust that aims to minimize the use of unsafe code, and another for `unsafe` code closely following C conventions, essential for its similarity to the WeensyOS pset.
 
 # Source Inspirations & How to contribute
 
