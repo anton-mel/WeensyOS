@@ -1,4 +1,4 @@
-# WeesyOS in Rust
+# WeesyOS in Rust (Safe)
 
 WeensyOS is a tiny kernel that can run on bare-metal x86-64 machines (QEMU's emulated CPUs). The initial state of the kernel contains code for bootstrapping kernel, handling exceptions/syscalls, executing user-level program, and helper functions for your CPSC 323 exercises.
 
