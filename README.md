@@ -11,7 +11,7 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 
 # How to build
 
-run ```make```
+run ```make```.
 
 <details>
 <summary>Execute only once</summary>
