@@ -4,4 +4,5 @@ WeensyOS is a tiny kernel that can run on bare-metal x86-64 machines (QEMU's emu
 
 This project comprises two branches: one for `rust-safe` (semisafe) code, serving as an example of a potentially correct OS implementation in Rust that aims to minimize the use of unsafe code, and another for `unsafe` code closely following C conventions, essential for its similarity to the WeensyOS pset.
 
+> [!TIP]
 > Please switch to the respective branch to access the source code
