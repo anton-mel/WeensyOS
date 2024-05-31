@@ -15,6 +15,7 @@ run ```make```.
 
 <details>
 <summary>Execute only once</summary>
+</details>
 
 1. Get to the root: ```cd ./starter-code-rust```
 2. Change rust-toolchain: ```rustup override set nightly```, you might need ```rustup component add rust-src --toolchain nightly-aarch64-apple-darwin``` for MacOS-Darwin
