@@ -1,54 +1,71 @@
+// To write an operating system kernel, we need code that does not depend on any 
+// operating system features. This means that we can’t use threads, files, heap 
+// memory, the network, random numbers, standard output, or any other features 
+// requiring OS abstractions or specific hardware. Which makes sense, since we’re 
+// trying to write our own OS and our own drivers
+
+// Create an "baremetal" executable that 
+// can be run without an underlying OS
 #![no_std]
 #![cfg_attr(test, no_main)]
-#![feature(custom_test_frameworks)]
+
+#![feature(lang_items)]
+#![allow(internal_features)]
+#![feature(core_intrinsics)]
 #![feature(abi_x86_interrupt)]
-#![feature(const_mut_refs)]
+
+// Configurations for testing (temp)
+#![feature(custom_test_frameworks)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-extern crate alloc;
+extern crate rlibc;
 
+// Import Modules
 use core::panic::PanicInfo;
 
-// Import Modules Here
-pub mod allocator;
-pub mod gdt;
-pub mod interrupts;
-pub mod memory;
-pub mod serial;
-pub mod task;
-pub mod vga_buffer;
-pub mod visual;
-pub mod aux;
-
-
-pub fn init() {
-    gdt::init();
-    aux::init_log();
-    interrupts::init_idt();
-    // Initialize the 8259 PIC interrups
-    unsafe { interrupts::PICS.lock().initialize() };
-    x86_64::instructions::interrupts::enable();
+// Rust only has a very minimal runtime, which takes care of some 
+// small things such as setting up stack overflow guards or printing 
+// a backtrace on panic. Still, it calls main, but our OS does not have 
+// acccess to the Rust runtime, so we overwrite the operating system 
+// entry point with our own _start everywhere.
+#[no_mangle]
+pub extern "C" fn kernel_entry() {
+    // ATTENTION: we have a very small stack and no guard page
+    hlt_loop();
 }
 
-pub fn fail() -> ! {
-    use crate::task::{executor::Executor, keyboard, Task};
-
-    let mut executor = Executor::new();
-    executor.spawn(Task::new(keyboard::keypresses()));
-    executor.run();
+// Handle New Panic
+#[cfg(not(test))]
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+    // Panic in Run Mode prints
+    hlt_loop();
 }
 
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    // Panic in Test Mode quits
+    test_panic_handler(info)
+}
+
+// Energy-efficient endless loop
 pub fn hlt_loop() -> ! {
-    // use energy efficient loop
-    loop { x86_64::instructions::hlt(); }
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
 
+#[cfg(not(test))]
+#[lang = "eh_personality"]
+extern fn eh_personality() {}
+
+// https://wiki.osdev.org/APM https://wiki.osdev.org/ACPI
 // Unfortunately, shutting down is relatively complex because it requires 
 // implementing support for either the APM or ACPI power management standard.
 // Luckily, QEMU supports a special isa-debug-exit device, which provides 
 // an easy way to exit QEMU from the guest system.
-// https://wiki.osdev.org/APM https://wiki.osdev.org/ACPI
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum QemuExitCode {
@@ -58,7 +75,6 @@ pub enum QemuExitCode {
 
 pub fn exit_qemu(exit_code: QemuExitCode) {
     use x86_64::instructions::port::PortWriteOnly;
-
     const PORT_EXIT: u16 = 0xf4;
 
     unsafe {
@@ -67,56 +83,16 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
     }
 }
 
-/// Set-up test trait
-pub trait Testable {
-    fn run(&self) -> ();
-}
-
-impl<T> Testable for T
-where
-    T: Fn(),
-{
-    fn run(&self) {
-        // Manage your template here
-        serial_print!("{}...\t", core::any::type_name::<T>());
-        self();
-        serial_println!("[ok]");
-    }
-}
-
-/// Configurations for Cargo Test
-pub fn test_runner(tests: &[&dyn Testable]) {
-    serial_println!("Running {} tests", tests.len());
-    for test in tests {
-        test.run();
-    }
-    exit_qemu(QemuExitCode::Success);
-}
-
-pub fn test_panic_handler(info: &PanicInfo) -> ! {
-    serial_println!("[failed]\n");
-    serial_println!("Error: {}\n", info);
-    exit_qemu(QemuExitCode::Failed);    
+pub fn test_panic_handler(_info: &PanicInfo) -> ! {
+    exit_qemu(QemuExitCode::Failed);
     hlt_loop();
 }
 
 /// Entry point for `cargo test`
 #[cfg(test)]
-use bootloader::{entry_point, BootInfo};
-
-#[cfg(test)]
-entry_point!(test_kernel_main);
-
-/// Entry point for `cargo xtest`
-#[cfg(test)]
-fn test_kernel_main(_boot_info: &'static BootInfo) -> ! {
+#[no_mangle]
+pub extern "C" fn _start() -> ! {
     init();
     test_main();
     hlt_loop();
-}
-
-#[cfg(test)]
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    test_panic_handler(info)
 }
