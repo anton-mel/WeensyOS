@@ -1,4 +1,4 @@
-# WeesyOS in Rust
+# WeesyOS in Rust (Unsafe)
 
 WeensyOS is a tiny kernel that can run on bare-metal x86-64 machines (QEMU's emulated CPUs). The initial state of the kernel contains code for bootstrapping kernel, handling exceptions/syscalls, executing user-level program, and helper functions for your CPSC 323 exercises.
 
@@ -11,18 +11,19 @@ By compiling for our host triple, the Rust compiler and the linker assume that t
 
 # How to build
 
+run ```make```
+
 <details>
 <summary>Execute only once</summary>
 
 1. Get to the root: ```cd ./starter-code-rust```
 2. Change rust-toolchain: ```rustup override set nightly```, you might need ```rustup component add rust-src --toolchain nightly-aarch64-apple-darwin``` for MacOS-Darwin
 3. Build Target: ```cargo +nightly build --target x86_64-weensyos.json```
-4. Create Cargo Image: ```cargo bootimage``` (look for dependencies below). Image Created at `./target/x86_64-weensyos/debug/bootimage-weensyos.bin`
-</details>
+4. Create Cargo Image: ```make iso```
 
 ### Run QEMU-Display
 
-Finally, run QEMU via bootimage runner ```cargo run --target your_custom_target.json [other_args] -- [qemu args]```. EDIT: Should work with just ```cargo run```. Note: if you are stuck in the loop and cannot exit QEMU (press `q` for `quit`), try to `pkill qemu` from another terminal. You can also run QEMU directly via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can also enable QEMU graphic display if you work locally).
+Finally, run QEMU via mkbootimage runner ```make run```. Note: if you are stuck in the loop and cannot exit QEMU (press `q` for `quit`), try to `pkill qemu` from another terminal. You can also run QEMU directly via ```qemu-system-x86_64 -nographic -drive format=raw,file=target/x86_64-weensyos/debug/bootimage-weensyos.bin``` (you can also enable QEMU graphic display if you work locally).
 
 
 # How to test
@@ -53,18 +54,12 @@ Instead of writing our own bootloader, which is a project on its own, we use the
 Please, consider reading through these documentations is you plan to contribute:
 
 ```
-    1. https://os.phil-opp.com/
-    2. https://www.theseus-os.com/
-    3. https://zoo.cs.yale.edu/classes/cs323/323/proj5/starter-code/
+    1. https://www.theseus-os.com/
+    2. https://zoo.cs.yale.edu/classes/cs323/323/proj5/starter-code/
 ```
 
 Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/ or develop locally.
 
-# Preview
-
-<div align="center">
-   <img width="1660" alt="image" src="https://github.com/anton-mel/WeensyOS/assets/78281795/cc2ce598-adad-4647-a982-ce4ee05e81cc">
-</div>
 
 
 
