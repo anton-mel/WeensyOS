@@ -1,7 +1,6 @@
-#![no_std]
-#![no_main]
-
+#![allow(dead_code)]
 use core::arch::asm;
+use x86_64::instructions::port::Port;
 
 // x86.h: C code to interface with x86 hardware and CPU.
 //
@@ -35,7 +34,7 @@ pub struct X86_64PageTable {
 
 pub fn pageindex(addr: usize, level: u32) -> usize {
     assert!(level <= 3);
-    (addr >> (PAGEOFFBITS + (3 - level) * PAGEINDEXBITS)) & 0x1FF
+    (addr >> (PAGEOFFBITS + ((3 - level) as usize) * PAGEINDEXBITS)) & 0x1FF
 }
 
 pub const PAGEOFFMASK: usize = PAGESIZE - 1;
@@ -118,16 +117,19 @@ pub fn breakpoint() {
 }
 
 pub fn inb(port: u16) -> u8 {
-    let mut data: u8;
-    unsafe {
-        asm!("inb %dx, %al", in("dx") port, out("al") data);
-    }
-    data
+    let mut port = Port::new(port);
+    unsafe { port.read() }
 }
 
 pub fn insb(port: u16, addr: *mut u8, cnt: usize) {
     unsafe {
-        asm!("cld; repne; insb", in("dx") port, inout("rdi") addr, inout("rcx") cnt, options(nostack, preserves_flags));
+        let mut cur_addr = addr;
+
+        for _ in 0..cnt {
+            let byte = inb(port);
+            cur_addr.write(byte);
+            cur_addr = cur_addr.offset(1);
+        }
     }
 }
 
@@ -141,7 +143,7 @@ pub fn inw(port: u16) -> u16 {
 
 pub fn insw(port: u16, addr: *mut u16, cnt: usize) {
     unsafe {
-        asm!("cld; repne; insw", in("dx") port, inout("rdi") addr, inout("rcx") cnt, options(nostack, preserves_flags));
+        asm!("cld; repne; insw", in("dx") port, in("rdi") addr, in("rcx") cnt, options(nostack, preserves_flags));
     }
 }
 
@@ -155,19 +157,18 @@ pub fn inl(port: u16) -> u32 {
 
 pub fn insl(port: u16, addr: *mut u32, cnt: usize) {
     unsafe {
-        asm!("cld; repne; insl", in("dx") port, inout("rdi") addr, inout("rcx") cnt, options(nostack, preserves_flags));
+        asm!("cld; repne; insl", in("dx") port, in("rdi") addr, in("rcx") cnt, options(nostack, preserves_flags));
     }
 }
 
 pub fn outb(port: u16, data: u8) {
-    unsafe {
-        asm!("outb %al, %dx", in("al") data, in("dx") port);
-    }
+    let mut port = Port::new(port);
+    unsafe { port.write(data) }
 }
 
 pub fn outsb(port: u16, addr: *const u8, cnt: usize) {
     unsafe {
-        asm!("cld; repne; outsb", in("dx") port, inout("rsi") addr, inout("rcx") cnt, options(nostack, preserves_flags));
+        asm!("cld; repne; outsb", in("dx") port, in("rsi") addr, in("rcx") cnt, options(nostack, preserves_flags));
     }
 }
 
@@ -179,7 +180,7 @@ pub fn outw(port: u16, data: u16) {
 
 pub fn outsw(port: u16, addr: *const u16, cnt: usize) {
     unsafe {
-        asm!("cld; repne; outsw", in("dx") port, inout("rsi") addr, inout("rcx") cnt, options(nostack, preserves_flags));
+        asm!("cld; repne; outsw", in("dx") port, in("rsi") addr, in("rcx") cnt, options(nostack, preserves_flags));
     }
 }
 
@@ -191,7 +192,7 @@ pub fn outl(port: u16, data: u32) {
 
 pub fn outsl(port: u16, addr: *const u32, cnt: usize) {
     unsafe {
-        asm!("cld; repne; outsl", in("dx") port, inout("rsi") addr, inout("rcx") cnt, options(nostack, preserves_flags));
+        asm!("cld; repne; outsl", in("dx") port, in("rsi") addr, in("rcx") cnt, options(nostack, preserves_flags));
     }
 }
 
@@ -209,26 +210,26 @@ pub fn lidt(p: *const u8) {
 
 pub fn lldt(sel: u16) {
     unsafe {
-        asm!("lldt {}", in(reg) sel);
+        asm!("lldt {0:x}", in(reg) sel);
     }
 }
 
 pub fn ltr(sel: u16) {
     unsafe {
-        asm!("ltr {}", in(reg) sel);
+        asm!("ltr {0:x}", in(reg) sel);
     }
 }
 
 pub fn lcr0(val: u32) {
     unsafe {
-        asm!("mov cr0, {}", in(reg) val);
+        asm!("mov cr0, {0:x}", in(reg) val);
     }
 }
 
 pub fn rcr0() -> u32 {
     let val: u32;
     unsafe {
-        asm!("mov {}, cr0", out(reg) val);
+        asm!("mov {0:x}, cr0", out(reg) val);
     }
     val
 }
@@ -257,14 +258,14 @@ pub fn rcr3() -> usize {
 
 pub fn lcr4(val: u32) {
     unsafe {
-        asm!("mov cr4, {}", in(reg) val);
+        asm!("mov cr4, {0:x}", in(reg) val);
     }
 }
 
 pub fn rcr4() -> u32 {
     let val: u32;
     unsafe {
-        asm!("mov {}, cr4", out(reg) val);
+        asm!("mov {0:x}, cr4", out(reg) val);
     }
     val
 }
@@ -285,17 +286,22 @@ pub fn read_rsp() -> usize {
     val
 }
 
-pub fn cpuid(eax: u32, ecx: u32, regs: &mut [u32; 4]) {
-    unsafe {
-        asm!(
-            "cpuid",
-            inout("eax") eax => regs[0],
-            inout("ebx") 0 => regs[1],
-            inout("ecx") ecx => regs[2],
-            inout("edx") 0 => regs[3],
-        );
-    }
-}
+// use raw_cpuid::CpuId;
+// pub fn cpuid(info: u32, eaxp: &mut u32, ebxp: &mut u32, ecxp: &mut u32, edxp: &mut u32) {
+//     let cpuid = CpuId::new();
+//     if let Some(result) = cpuid.get_processor_brand_string() {
+//         *eaxp = result.as_bytes()[0..4].try_into().unwrap();
+//         *ebxp = result.as_bytes()[4..8].try_into().unwrap();
+//         *ecxp = result.as_bytes()[8..12].try_into().unwrap();
+//         *edxp = result.as_bytes()[12..16].try_into().unwrap();
+//     } else {
+//         *eaxp = 0;
+//         *ebxp = 0;
+//         *ecxp = 0;
+//         *edxp = 0;
+//     }
+// }
+
 
 pub fn rdtsc() -> u64 {
     let rax: u32;

@@ -1,6 +1,3 @@
-#![no_std]
-#![no_main]
-
 // elf.rs
 //
 //   Structures and constants for ELF (Executable Linking Format) executable
@@ -10,6 +7,7 @@ pub const ELF_MAGIC: u32 = 0x464C457F;   // "\x7FELF" in little endian
 
 // executable header
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ElfHeader {
     pub e_magic: u32,       // @0 must equal ELF_MAGIC
     pub e_elf: [u8; 12],
@@ -30,6 +28,7 @@ pub struct ElfHeader {
 
 // program header (required by the loader)
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ElfProgram {
     pub p_type: u32,        // @0x00 see ELF_PTYPE below
     pub p_flags: u32,       // @0x04 see ELF_PFLAG below

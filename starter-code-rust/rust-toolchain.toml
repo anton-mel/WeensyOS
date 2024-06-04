@@ -1,5 +1,7 @@
 [toolchain]
 channel = "nightly"
-components = ["rust-src"]
-targets = ["x86_64-weensyos.json"]
+components = ["rustfmt", "clippy", "rust-src", "llvm-tools-preview"]
+## Rustup always installs the host target by default, so we don't need to specify it here.
+## All we need to specify is the none-os targets used to build our bootloader.
+targets = ["x86_64-unknown-none"]
 profile = "minimal"
