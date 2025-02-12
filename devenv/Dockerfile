@@ -41,8 +41,6 @@ RUN rustup update stable && \
     rustup component add clippy rustfmt && \
     cargo install cargo-edit
 
-RUN rustup toolchain install nightly
-
 # Build: `docker build -f ../devenv/Dockerfile -t weensyos ..`
 # Start the container: `docker run -it -v myhomedir:/home/nonroot weensyos`
 CMD ["/bin/bash"]
