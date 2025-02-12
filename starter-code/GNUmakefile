@@ -1,5 +1,5 @@
 IMAGE = weensyos.img
-all: clean $(IMAGE)
+all: $(IMAGE)
 -include build/rules.mk
 
 # '$(TEST_FILE)' controls which of the default test cases will be replaced
@@ -17,6 +17,7 @@ SHARED_DIR = ./shared
 
 ROOT_DIR := $(shell realpath $(CURDIR))
 RUST_ARCHIVE_DIR = $(R_KERN_DIR)/target/release
+RUST_SRCS := $(shell find $(R_KERN_DIR)/src -type f) $(R_KERN_DIR)/Cargo.toml $(R_KERN_DIR)/Cargo.lock
 
 # '$(V)' controls whether the lab makefiles print verbose commands (the
 # actual shell commands run by Make), as well as the "overview" commands
@@ -43,9 +44,10 @@ else
 	ccend:=""
 endif
 
+
 # If you are working locally, set to 0 to disable
 # If you are using node.zoo.cs.edu, set 1 to enable
-USE_HOST_LOCK ?= 0
+USE_HOST_LOCK ?= 1
 
 # locked img error messages
 # messages to display if another instance of QEMU is running
@@ -92,13 +94,17 @@ PROCESS_OBJS = $(OBJDIR)/p-allocator.o $(OBJDIR)/p-fork.o \
 PROCESS_LINKER_FILES = link/process.ld link/shared.ld
 
 
-# Generic rules for making object files
+# --- Rust Build Integration ---
 
-rust:
+# Stamp file for Rust build.
+# It depends on all Rust source and manifest files.
+$(RUST_ARCHIVE_DIR)/.cargo_build: $(RUST_SRCS)
 	@echo "  BUILDING Rust objects..."
 	@cd $(R_KERN_DIR) && cargo build --release
+	@touch $(RUST_ARCHIVE_DIR)/.cargo_build
 
-$(RUST_KERNEL_OBJS): | rust
+# The Rust kernel object now depends on the stamp file.
+$(RUST_KERNEL_OBJS): $(RUST_ARCHIVE_DIR)/.cargo_build
 	@echo "  UNPACKING and processing .o files..."
 	@cd $(RUST_ARCHIVE_DIR) && \
 	for lib in lib*.a; do \
@@ -107,12 +113,19 @@ $(RUST_KERNEL_OBJS): | rust
 		libname=$${libname#lib}; \
 		for obj in *.o; do \
 			if echo "$$obj" | grep -q "^$$libname.*\.o$$"; then \
-				mv "$$obj" "$(ROOT_DIR)/$(RUST_ARCHIVE_DIR)/$$libname.o"; \
+				if [ "$$obj" != "$$libname.o" ]; then \
+					mv -f "$$obj" "$(ROOT_DIR)/$(RUST_ARCHIVE_DIR)/$$libname.o"; \
+				fi; \
 			else \
 				rm -f "$$obj"; \
 			fi; \
 		done; \
 	done
+
+# --- End Rust Build Integration ---
+
+
+# Generic rules for making object files
 
 $(LIB_OBJS): $(OBJDIR)/%.o: $(SHARED_DIR)/%.c $(BUILDSTAMPS)
 	$(call compile,-I $(SHARED_DIR) -c $< -o $@,COMPILE)

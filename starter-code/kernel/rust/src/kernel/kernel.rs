@@ -238,9 +238,6 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
             }
 
             // TODO
-            // console_printf(CPOS(24, 0), 0x0C00,
-            //                "Process %d page fault for %p (%s %s, rip=%p)!\n",
-            //                current->p_pid, addr, operation, problem, reg->reg_rip);
             console_printf(cpos!(24, 0), 0x0C00, 
                 "Process page fault!".as_ptr() as *const u8);
 

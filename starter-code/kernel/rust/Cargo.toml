@@ -20,10 +20,10 @@ panic = "abort"
 overflow-checks = false
 opt-level = 0
 debug = true
-lto = true
+lto = "fat"
 
 [profile.release]
 panic = "abort"
 overflow-checks = false
 opt-level = 0
-lto = true
+lto = "fat"
