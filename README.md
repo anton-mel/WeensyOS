@@ -87,6 +87,3 @@ extern "C-unwind" {
 
 You can safely assume that the C implementation has been verified and is memory safe. You can also assume that all functions needed to complete this problem set are already imported in the `mod.rs` files. Review what the C functions do to understand how to use them in order to complete the problem set. Otherwise, follow the general spec provided with the assignment.
 
-## WeensyOS-Rust Support
-
-We acknowledge that building an operating system in Rust can be challenging. Although only a few ULAs are available to assist, I (Anton) and George will provide support whenever possible via the channel provided below. Please note that we will not help with assignment-related questions outside of office hours, except for issues specifically related to WeensyOS-Rust (such as undefined behavior, errors, or other unexpected problems).
