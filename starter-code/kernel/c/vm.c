@@ -74,7 +74,6 @@ void set_pagetable(x86_64_pagetable *pagetable)
 //    Returns an x86_64_pagetable pointer to the last level pagetable
 //    if it exists and can be accessed with the given permissions
 //    Returns NULL otherwise
-
 extern x86_64_pagetable *lookup_l1pagetable(x86_64_pagetable *pagetable,
                                             uintptr_t va, int perm);
 
