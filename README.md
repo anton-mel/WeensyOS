@@ -34,7 +34,3 @@ rustup default nightly
 ## How to build
 
 To start WeensyOS, run as usual `make run` or `make run-console`. You should see `PANIC: kernel/c/vm.c:45: assertion 'vmap.pa == addr' failed` error displayed.
-
-## C vs Rust WeensyOS Differences
-
-If you have already reviewed the project structure, you'll notice that the main difference with C-WeensyOS is that the `kern` folder contains both `c` and `rust` implementations. We have separated the bootloader and helper functions (written in C) from the core kernel functions required for this problem set—which are implemented in Rust as a playground. There are only 6 of them: `kernel`, `exception`, `process_setup`, `virtual_memory_map`, `program_load_segment`, and `lookup_l1pagetable`.
