@@ -1,6 +1,4 @@
-# Docker Tutorial
-
-Developing WeensyOS requires a Linux environment because it relies on Linux-specific features such as the ELF binary format, the x86-64 architecture, and the precise linking of kernel modules. A custom Linux environment also grants full root privileges, which are essential for certain advanced development tasks and can allow you to explore further than the scope of this course. You have the option to work traditionally via the `node.zoo.cd.yale.edu` environment, set it up locally on your Linux machine, or, if you're using macOS, you can run the provided Docker container to emulate a Linux environment. Unlike a virtual machine, Docker containers are lightweight, offering faster startup times and more efficient resource management while still providing a consistent and reliable development setup. Additionally, you will also learn in future classes how Docker can be integrated with orchestration platforms like Kubernetes, which will enable you to manage scalable, production-ready deployments and streamline your development workflow far beyond simple emulation. 
+# Docker Tutorial (Optional)
 
 This guide helps you set up a consistent development environment using Docker with `ubuntu:22.04`.
 
