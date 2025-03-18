@@ -32,7 +32,7 @@ pub unsafe fn program_load_segment(
             console_printf(
                 cpos!(22, 0),
                 0xC000,
-                "program_load_segment(pid {}): can't assign address {:p}\n".as_ptr() as *const u8,
+                "program_load_segment(pid {}): can't assign address {:p}\0".as_ptr() as *const u8,
                 (*p).p_pid,
                 addr,
             );

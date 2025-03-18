@@ -240,7 +240,7 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
 
             // TODO
             console_printf(cpos!(24, 0), 0x0C00, 
-                "Process page fault!".as_ptr() as *const u8);
+                "Process page fault!\0".as_ptr() as *const u8);
 
             (*current).p_state = P_BROKEN;
         }
