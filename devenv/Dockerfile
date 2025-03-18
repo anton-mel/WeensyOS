@@ -1,17 +1,17 @@
-# Local dev with the x86_64 architecture
+# Build: `docker build -f ../devenv/Dockerfile -t weensyos ..`
+# Start the container: `docker run -it -v myhomedir:/home/nonroot weensyos`
+
+# x86_64 architecture
 FROM --platform=linux/amd64 ubuntu:22.04
 
-ARG USER=nonroot
-ENV HOME=/home/$USER
+ENV HOME=/root
+ENV PATH="$HOME/.cargo/bin:$PATH"
 
-RUN apt-get update
-
-# Install bash, git, and other packages
-RUN apt-get install -y \
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
     bash \
     curl \
     git \
-    sudo \
     vim \
     wget \
     build-essential \
@@ -20,27 +20,19 @@ RUN apt-get install -y \
     libssl-dev \
     llvm \
     clang \
-    qemu-system-x86
+    qemu-system-x86 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install latest Rust using rustup
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
-ENV PATH="/home/${USER}/.cargo/bin:${PATH}"
 
-# Create the nonroot user and set ownership
-RUN useradd --groups sudo --shell /bin/bash ${USER} \
-    && echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER} \
-    && chmod 0440 /etc/sudoers.d/${USER} \
-    && mkdir -p /home/${USER} /home/${USER}/.cargo /home/${USER}/.rustup \
-    && chown -R ${USER}:${USER} /home/${USER}
+# Configure Rust toolchain
+RUN rustup update nightly && \
+    rustup default nightly && \
+    rustup target add x86_64-unknown-none
 
-USER ${USER}
-WORKDIR /home/${USER}
+# Setup starter-code
+COPY starter-code /root/starter-code
+WORKDIR /root/starter-code
 
-# Install common Rust tools and components
-RUN rustup update stable && \
-    rustup component add clippy rustfmt && \
-    cargo install cargo-edit
-
-# Build: `docker build -f ../devenv/Dockerfile -t weensyos ..`
-# Start the container: `docker run -it -v myhomedir:/home/nonroot weensyos`
 CMD ["/bin/bash"]
