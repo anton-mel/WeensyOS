@@ -86,14 +86,15 @@ pub unsafe extern "sysv64" fn kernel(command: Option<NonNull<u8>>) {
 
     match command {
         Some(ptr) => {
-            let cmd = ptr.as_ptr();
-            if strcmp(cmd as *const i8, "fork".as_ptr() as *const i8) == 0 {
+            let cmd = ptr.as_ptr() as *const core::ffi::c_char;
+
+            if strcmp(cmd, b"fork\0".as_ptr() as *const i8) == 0 {
                 process_setup(1, 4);
-            } else if strcmp(cmd as *const i8, "forkexit".as_ptr() as *const i8) == 0 {
+            } else if strcmp(cmd, b"forkexit\0".as_ptr() as *const i8) == 0 {
                 process_setup(1, 5);
-            } else if strcmp(cmd as *const i8, "test".as_ptr() as *const i8) == 0 {
+            } else if strcmp(cmd, b"test\0".as_ptr() as *const i8) == 0 {
                 process_setup(1, 6);
-            } else if strcmp(cmd as *const i8, "test2".as_ptr() as *const i8) == 0 {
+            } else if strcmp(cmd, b"test2\0".as_ptr() as *const i8) == 0 {
                 for i in 1..=2 {
                     process_setup(i, 6);
                 }
