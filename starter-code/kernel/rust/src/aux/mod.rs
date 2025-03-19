@@ -1,10 +1,7 @@
-// NO NEED TO UNDERSTAND THIS FILE.
-// 
-// When building an operating system, we lack the ability to dynamically allocate 
-// memory for features like `String` or the `format!` macro, as they depend on 
-// the standard library. As a result, all string-based operations use statically 
-// allocated fixed-size buffers. To simplify and streamline string handling in 
-// this constrained environment, we provide auxiliary helper functions.
+// In this operating system, we lack the ability to dynamically allocate 
+// memory for features like `String` or the `format!` macro. You will implement
+// this feature in your final ptoject. For now, all string-based operations use 
+// statically allocated fixed-size buffers.
 
 use core::fmt::Write;
 
