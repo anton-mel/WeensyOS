@@ -1,5 +1,3 @@
-// YOU DO NOT NEED TO UNDERTAND THIS FILE.
-// 
 // This file is for linking C k-loader functionality with Rust.
 // For better understanding of FFI consider reading this documentation.
 // https://doc.rust-lang.org/nomicon/ffi.html#foreign-calling-conventions
