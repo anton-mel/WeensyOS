@@ -33,4 +33,4 @@ rustup default nightly
 
 ## How to build
 
-To start WeensyOS, run as usual `make run` or `make run-console`. You should see `PANIC: kernel/c/vm.c:45: assertion 'vmap.pa == addr' failed` error displayed.
+To start WeensyOS, run as usual `make run` or `make run-console`.
