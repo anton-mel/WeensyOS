@@ -1,6 +1,6 @@
 # Development Environment Setup
 
-WeensyOS development requires a Linux environment due to its support for the ELF binary format (while macOS uses Mach-O and Windows uses the Portable Executable format), x86-64 architecture, and accurate linking between kernel modules. You have the option to work traditionally via the `node.zoo.cd.yale.edu` environment, set it up locally on your Linux machine, or run the provided Docker container. This guide helps you set up a consistent development environment using Docker with `ubuntu:22.04`.
+This guide helps you set up a consistent development environment using Docker with `ubuntu:22.04`.
 
 ## Prerequisites
 * Access to a *nix machine (Linux or macOS)
