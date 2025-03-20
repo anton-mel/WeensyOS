@@ -25,7 +25,7 @@ rustup default nightly
 ```
 
 > [!IMPORTANT]
-> Only for those who are using a Docker file provided or working locally on your Linux machine, you should disable the locking of `qemu` by manually modifying the `USE_HOST_LOCK=0` flag in GNUMakefile to 0 (line 50). Previously, it prevented two `qemu` processes from running on different Zoo nodes. Otherwise, your environement will not be able to find required variables.
+> Only for those who are using a Docker file provided or working locally on your Linux machine, you should disable the locking of `qemu` by manually modifying the `USE_HOST_LOCK=0` flag in GNUMakefile to 0 (line 50).
 
 <p align="center">
   Congratulations! You're all set up to start working with WeensyOS in Rust!
