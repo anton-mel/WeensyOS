@@ -31,7 +31,7 @@ V = 0
 
 # If you are working locally, set to 0 to disable
 # If you are using node.zoo.cs.edu, set 1 to enable
-USE_HOST_LOCK ?= 0
+USE_HOST_LOCK ?= 1
 
 # 'HOST_FILE' will contain the hostname of the machine running $(QEMU)
 # This allows us to kill process in remote machine if needed
