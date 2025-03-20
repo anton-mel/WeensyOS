@@ -1,0 +1,29 @@
+[package]
+name = "weensyos"
+version = "0.1.0"
+authors = ["Anton Melnychuk <anton.melnychuk@yale.edu>"]
+edition = "2021"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+volatile = "0.6.1"
+pic8259 = "0.11.0"
+x86_64 = "0.15.2"
+itoa = "1.0.14"
+spin = "0.9.8"
+
+[profile.dev]
+panic = "abort"
+overflow-checks = false
+opt-level = 0
+debug = true
+lto = "fat"
+
+[profile.release]
+panic = "abort"
+overflow-checks = false
+opt-level = 0
+lto = "fat"
