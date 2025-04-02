@@ -50,6 +50,7 @@ extern "C-unwind" {
     /// Generates a formatted message using a C format string and variadic arguments
     fn generate_msg(fmt: *const core::ffi::c_char, ...) -> *const core::ffi::c_char;
     /// Debug loging to the log.txt file.
+    #[allow(dead_code)]
     fn log_printf(fmt: *const core::ffi::c_char, ...);
 }
 
