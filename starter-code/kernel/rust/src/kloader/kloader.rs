@@ -29,13 +29,7 @@ pub unsafe fn program_load_segment(
         if assign_physical_page(addr as usize, (*p).p_pid as i8) < 0 ||
             virtual_memory_map((*p).p_pagetable, addr as usize, addr as usize, PAGESIZE as usize, 
                                 (PTE_U | PTE_W | PTE_P) as i32) < 0 {
-            console_printf(
-                cpos!(22, 0),
-                0xC000,
-                "program_load_segment(pid {}): can't assign address {:p}\0".as_ptr() as *const u8,
-                (*p).p_pid,
-                addr,
-            );
+            c_console!("program_load_segment(pid %d): can't assign address %p", (*p).p_pid, addr);
             return -1;
         }
         addr += PAGESIZE;
