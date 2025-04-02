@@ -73,7 +73,7 @@ macro_rules! c_panic {
 macro_rules! c_log {
     ($fmt:literal $(, $arg:expr)* $(,)?) => {{
         // Null-terminate string
-        let fmt_cstr = concat!($fmt, "\0");
+        let fmt_cstr = concat!($fmt, "\n\0");
         unsafe {
             // Call the C generate_msg(fmt, ...args)
             let msg = $crate::generate_msg(fmt_cstr.as_ptr() as *const i8, $($arg),*);
