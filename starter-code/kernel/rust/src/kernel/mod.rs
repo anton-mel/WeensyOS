@@ -59,10 +59,4 @@ extern "C-unwind" {
         a: *const core::ffi::c_char,
         b: *const core::ffi::c_char,
     ) -> core::ffi::c_int;
-    pub fn console_printf(
-        cpos: i32,
-        color: i32,
-        format: *const u8,
-        ...
-    ) -> i32;
 }
