@@ -47,10 +47,12 @@ pub extern "C" fn rust_eh_personality() {}
 extern "C-unwind" {
     /// Calls the C panic handler
     fn panic(format: *const core::ffi::c_char) -> !;
+    /// Calls the C console printing handler
+    fn console_printf(cpos: i32, color: i32, format: *const u8, ...) -> i32;
     /// Generates a formatted message using a C format string and variadic arguments
     fn generate_msg(fmt: *const core::ffi::c_char, ...) -> *const core::ffi::c_char;
-    /// Debug loging to the log.txt file.
     #[allow(dead_code)]
+    /// Debug loging to the log.txt file.
     fn log_printf(fmt: *const core::ffi::c_char, ...);
 }
 
@@ -73,14 +75,32 @@ macro_rules! c_panic {
 macro_rules! c_log {
     ($fmt:literal $(, $arg:expr)* $(,)?) => {{
         // Null-terminate string
-        let fmt_cstr = concat!($fmt, "\n\0");
+        let fmt_cstr = concat!($fmt, "\0");
         unsafe {
             // Call the C generate_msg(fmt, ...args)
             let msg = $crate::generate_msg(fmt_cstr.as_ptr() as *const i8, $($arg),*);
-            log_printf(msg);
+            log_printf(msg.as_ptr() as *const i8);
         }
     }};
 }
+
+// DEBUGGING CONSOLE
+#[macro_export]
+macro_rules! c_console {
+    ($fmt:literal $(, $arg:expr)* $(,)?) => {{
+        // Null-terminate string
+        let fmt_cstr = concat!($fmt, "\0");
+        unsafe {
+            let msg = $crate::generate_msg(fmt_cstr.as_ptr() as *const i8, $($arg),*);
+            console_printf(
+                cpos!(24, 0),
+                0x0C00,
+                msg as *const u8
+            );
+        }
+    }};
+}
+
 
 // DO NOT USE FOR DUBUGGING (REQUIRED BY RUST)
 // Helper function to link Rust panic with C.
