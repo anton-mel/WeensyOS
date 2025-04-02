@@ -45,9 +45,43 @@ pub extern "C" fn rust_eh_personality() {}
 
 // Pset Debugging
 extern "C-unwind" {
-    fn panic(format: *const c_char) -> !;
+    /// Calls the C panic handler
+    fn panic(format: *const core::ffi::c_char) -> !;
+    /// Generates a formatted message using a C format string and variadic arguments
+    fn generate_msg(fmt: *const core::ffi::c_char, ...) -> *const core::ffi::c_char;
+    /// Debug loging to the log.txt file.
+    fn log_printf(fmt: *const core::ffi::c_char, ...);
 }
 
+// DEBUGGING PANIC
+#[macro_export]
+macro_rules! c_panic {
+    ($fmt:literal $(, $arg:expr)* $(,)?) => {{
+        // Null-terminate string
+        let fmt_cstr = concat!($fmt, "\0");
+        unsafe {
+            // Call the C generate_msg(fmt, ...args)
+            let msg = $crate::generate_msg(fmt_cstr.as_ptr() as *const i8, $($arg),*);
+            $crate::panic(msg);
+        }
+    }};
+}
+
+// DEBUGGING LOG
+#[macro_export]
+macro_rules! c_log {
+    ($fmt:literal $(, $arg:expr)* $(,)?) => {{
+        // Null-terminate string
+        let fmt_cstr = concat!($fmt, "\0");
+        unsafe {
+            // Call the C generate_msg(fmt, ...args)
+            let msg = $crate::generate_msg(fmt_cstr.as_ptr() as *const i8, $($arg),*);
+            log_printf(msg.as_ptr() as *const i8);
+        }
+    }};
+}
+
+// DO NOT USE FOR DUBUGGING (REQUIRED BY RUST)
 // Helper function to link Rust panic with C.
 // https://users.rust-lang.org/t/passing-callbacks-to-c-panic/91080/11
 #[panic_handler]

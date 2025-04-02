@@ -188,7 +188,7 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
                     map.pa as *const core::ffi::c_void, 
                     160
                 );
-                panic!("{:?}", msg);
+                c_panic!("{:?}", msg);
             }
             /* will not be reached */
         }
@@ -234,7 +234,7 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
             let problem = if reg.reg_err & PFERR_PRESENT as u64 != 0 { "protection problem" } else { "missing page" };
             
             if reg.reg_err & PFERR_USER as u64 == 0 {
-                panic!("Kernel page fault for {:?} ({} {}, rip={:?})!",
+                c_panic!("Kernel page fault for {:?} ({} {}, rip={:?})!",
                     addr, operation, problem, reg.reg_rip);
             }
 
