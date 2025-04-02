@@ -26,10 +26,4 @@ extern "C-unwind" {
         sz: usize,                        // Size
         perm: i32,                        // Permissions
     ) -> i32;
-    pub fn console_printf(
-        cpos: i32,
-        color: i32,
-        format: *const u8,
-        ...
-    ) -> i32;
 }
