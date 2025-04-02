@@ -77,7 +77,7 @@ macro_rules! c_log {
         unsafe {
             // Call the C generate_msg(fmt, ...args)
             let msg = $crate::generate_msg(fmt_cstr.as_ptr() as *const i8, $($arg),*);
-            log_printf(msg.as_ptr() as *const i8);
+            log_printf(msg);
         }
     }};
 }
