@@ -179,7 +179,7 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
             // rdi stores pointer for msg string
             let addr = (*current).p_registers.reg_rdi;
             if addr == 0 {
-                panic!("(exception) current process has not been set yet");
+                panic(core::ptr::null());
             } else {
                 let map = virtual_memory_lookup((*current).p_pagetable, addr as usize);
                 let mut msg = [0u8; 160];
@@ -189,8 +189,8 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
                     160
                 );
                 panic!("{:?}", msg);
-                /* will not be reached */
             }
+            /* will not be reached */
         }
         INT_SYS_GETPID => {
             (*current).p_registers.reg_rax = (*current).p_pid as u64;       
