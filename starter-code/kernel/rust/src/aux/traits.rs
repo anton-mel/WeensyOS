@@ -137,6 +137,167 @@ impl ToText for &str {
     }
 }
 
+// Implementation for unsigned 8-bit integers.
+impl ToText for u8 {
+    fn to_text(&self, buf: &mut [u8]) -> usize {
+        // u8 maximum is 255 so 4 bytes buffer is enough.
+        let mut pos = 0;
+        let mut n = *self as u32;
+        let mut temp = [0u8; 4];
+        let mut tpos = 0;
+        if n == 0 {
+            temp[tpos] = b'0';
+            tpos += 1;
+        } else {
+            while n > 0 {
+                let digit = (n % 10) as u8;
+                temp[tpos] = b'0' + digit;
+                tpos += 1;
+                n /= 10;
+            }
+        }
+        while tpos > 0 {
+            tpos -= 1;
+            if pos < buf.len() {
+                buf[pos] = temp[tpos];
+                pos += 1;
+            }
+        }
+        pos
+    }
+}
+
+// Implementation for unsigned 32-bit integers.
+impl ToText for u32 {
+    fn to_text(&self, buf: &mut [u8]) -> usize {
+        let mut pos = 0;
+        let mut n = *self as u64; // delegate to u64 conversion logic
+        let mut temp = [0u8; 11]; // u32 max: 10 digits
+        let mut tpos = 0;
+        if n == 0 {
+            temp[tpos] = b'0';
+            tpos += 1;
+        } else {
+            while n > 0 {
+                let digit = (n % 10) as u8;
+                temp[tpos] = b'0' + digit;
+                tpos += 1;
+                n /= 10;
+            }
+        }
+        while tpos > 0 {
+            tpos -= 1;
+            if pos < buf.len() {
+                buf[pos] = temp[tpos];
+                pos += 1;
+            }
+        }
+        pos
+    }
+}
+
+// Implementation for usize.
+impl ToText for usize {
+    fn to_text(&self, buf: &mut [u8]) -> usize {
+        let mut pos = 0;
+        let mut n = *self as u64;
+        let mut temp = [0u8; 21]; // Enough for a 64-bit number.
+        let mut tpos = 0;
+        if n == 0 {
+            temp[tpos] = b'0';
+            tpos += 1;
+        } else {
+            while n > 0 {
+                let digit = (n % 10) as u8;
+                temp[tpos] = b'0' + digit;
+                tpos += 1;
+                n /= 10;
+            }
+        }
+        while tpos > 0 {
+            tpos -= 1;
+            if pos < buf.len() {
+                buf[pos] = temp[tpos];
+                pos += 1;
+            }
+        }
+        pos
+    }
+}
+
+// Implementation for booleans.
+impl ToText for bool {
+    fn to_text(&self, buf: &mut [u8]) -> usize {
+        // Coerce the byte arrays to slices of the same type.
+        let s: &[u8] = if *self { &b"true"[..] } else { &b"false"[..] };
+        let mut pos = 0;
+        for &b in s {
+            if pos < buf.len() {
+                buf[pos] = b;
+                pos += 1;
+            }
+        }
+        pos
+    }
+}
+
+// Implementation for characters.
+impl ToText for char {
+    fn to_text(&self, buf: &mut [u8]) -> usize {
+        let mut temp = [0u8; 4];
+        let s = self.encode_utf8(&mut temp);
+        let bytes = s.as_bytes();
+        let mut pos = 0;
+        for &b in bytes {
+            if pos < buf.len() {
+                buf[pos] = b;
+                pos += 1;
+            }
+        }
+        pos
+    }
+}
+
+// Implementation for Option<T> where T: ToText.
+impl<T: ToText> ToText for Option<T> {
+    fn to_text(&self, buf: &mut [u8]) -> usize {
+        let mut pos = 0;
+        match self {
+            Some(ref value) => {
+                let prefix = b"Some(";
+                for &b in prefix {
+                    if pos < buf.len() {
+                        buf[pos] = b;
+                        pos += 1;
+                    }
+                }
+                pos += value.to_text(&mut buf[pos..]);
+                if pos < buf.len() {
+                    buf[pos] = b')';
+                    pos += 1;
+                }
+            }
+            None => {
+                let none_str = b"None";
+                for &b in none_str {
+                    if pos < buf.len() {
+                        buf[pos] = b;
+                        pos += 1;
+                    }
+                }
+            }
+        }
+        pos
+    }
+}
+
+// Implementation for references.
+impl<T: ToText> ToText for &T {
+    fn to_text(&self, buf: &mut [u8]) -> usize {
+        (*self).to_text(buf)
+    }
+}
+
 /// Macro to generate a collated message from any number of arguments.
 /// It expects a mutable byte buffer as the first argument, then a comma‑separated list
 /// of expressions that implement `ToText`. It returns the total number of bytes written.
