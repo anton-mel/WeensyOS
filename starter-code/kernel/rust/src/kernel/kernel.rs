@@ -4,6 +4,7 @@
 
 use crate::*;
 use crate::kernel::*;
+use crate::aux::traits::*;
 use core::ptr::NonNull;
 use core::ops::AddAssign;
 
@@ -153,9 +154,9 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
     (*current).p_registers = *reg;
     set_pagetable(kernel_pagetable);
 
-    // It can be useful to log events using `log_printf`.
+    // It can be useful to log events using `c_log!` macro.
     // Events logged this way are stored in the host's `log.txt` file.
-    /*log_printf("proc %d: exception %d\n", current->p_pid, reg->reg_intno);*/
+    /* c_log!("proc ", (*current).p_pid, ": exception ", (*reg).reg_intno, "\n"); */
 
     // Show the current cursor location and memory state
     // (unless this is a kernel fault).
@@ -188,7 +189,7 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
                     map.pa as *const core::ffi::c_void, 
                     160
                 );
-                c_panic!("{:?}", msg);
+                c_panic!(msg);
             }
             /* will not be reached */
         }

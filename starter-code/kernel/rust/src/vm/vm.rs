@@ -1,4 +1,6 @@
 use crate::vm::*;
+#[allow(unused_imports)]
+use crate::aux::traits::*;
 
 // lookup_l1pagetable(pagetable, va, perm)
 //    Helper function to find the last level of `va` in `pagetable`

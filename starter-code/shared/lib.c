@@ -398,14 +398,3 @@ uintptr_t asm_rcr2(void) {
 uintptr_t roundup(uintptr_t a, uintptr_t n) {
     return ROUNDUP(a, n);
 }
-
-// 256-byte buffer for formatted panic/log messages
-static char panic_buffer[256];
-// Format the message
-const char* generate_msg(const char* fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(panic_buffer, sizeof(panic_buffer), fmt, args);
-    va_end(args);
-    return panic_buffer;
-}

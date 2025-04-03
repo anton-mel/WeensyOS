@@ -1,7 +1,9 @@
 // In this operating system, we lack the ability to dynamically allocate 
 // memory for features like `String` or the `format!` macro. You will implement
 // this feature in your final ptoject. For now, all string-based operations use 
-// statically allocated fixed-size buffers.
+// statically allocated fixed-size buffers along with its custom traits.
+
+pub mod traits;
 
 use core::fmt::Write;
 

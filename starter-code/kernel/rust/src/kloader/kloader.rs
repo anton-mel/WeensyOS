@@ -4,6 +4,7 @@
 
 use crate::*;
 use crate::kloader::*;
+use crate::aux::traits::*;
 
 // program_load_segment(p, ph, src, allocator)
 //    Load an ELF segment at virtual address `ph->p_va` in process `p`. Copies

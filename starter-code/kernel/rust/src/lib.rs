@@ -49,8 +49,6 @@ extern "C-unwind" {
     fn panic(format: *const core::ffi::c_char) -> !;
     /// Calls the C console printing handler
     fn console_printf(cpos: i32, color: i32, format: *const u8, ...) -> i32;
-    /// Generates a formatted message using a C format string and variadic arguments
-    fn generate_msg(fmt: *const core::ffi::c_char, ...) -> *const core::ffi::c_char;
     #[allow(dead_code)]
     /// Debug loging to the log.txt file.
     fn log_printf(fmt: *const core::ffi::c_char, ...);
@@ -59,27 +57,31 @@ extern "C-unwind" {
 // DEBUGGING PANIC
 #[macro_export]
 macro_rules! c_panic {
-    ($fmt:literal $(, $arg:expr)* $(,)?) => {{
-        // Null-terminate string
-        let fmt_cstr = concat!($fmt, "\0");
-        unsafe {
-            // Call the C generate_msg(fmt, ...args)
-            let msg = $crate::generate_msg(fmt_cstr.as_ptr() as *const i8, $($arg),*);
-            $crate::panic(msg);
+    ($fmt:expr $(, $arg:expr)* $(,)?) => {{
+        let mut buf: [u8; 256] = [0; 256];
+        let len = $crate::generate_msg!(buf, $fmt, $($arg),*);
+        if len < buf.len() {
+            buf[len] = 0;
+        } else {
+            buf[buf.len() - 1] = 0;
         }
+        $crate::panic(buf.as_ptr() as *const i8);
     }};
 }
 
 // DEBUGGING LOG
 #[macro_export]
 macro_rules! c_log {
-    ($fmt:literal $(, $arg:expr)* $(,)?) => {{
-        // Null-terminate string
-        let fmt_cstr = concat!($fmt, "\0");
+    ($fmt:expr $(, $arg:expr)* $(,)?) => {{
+        let mut buf: [u8; 256] = [0; 256];
+        let len = $crate::generate_msg!(buf, $fmt, $($arg),*);
+        if len < buf.len() {
+            buf[len] = 0;
+        } else {
+            buf[buf.len() - 1] = 0;
+        }
         unsafe {
-            // Call the C generate_msg(fmt, ...args)
-            let msg = $crate::generate_msg(fmt_cstr.as_ptr() as *const i8, $($arg),*);
-            log_printf(msg.as_ptr() as *const i8);
+            log_printf(buf.as_ptr() as *const i8);
         }
     }};
 }
@@ -87,16 +89,16 @@ macro_rules! c_log {
 // DEBUGGING CONSOLE
 #[macro_export]
 macro_rules! c_console {
-    ($fmt:literal $(, $arg:expr)* $(,)?) => {{
-        // Null-terminate string
-        let fmt_cstr = concat!($fmt, "\0");
+    ($fmt:expr $(, $arg:expr)* $(,)?) => {{
+        let mut buf: [u8; 256] = [0; 256];
+        let len = $crate::generate_msg!(buf, $fmt, $($arg),*);
+        if len < buf.len() {
+            buf[len] = 0;
+        } else {
+            buf[buf.len() - 1] = 0;
+        }
         unsafe {
-            let msg = $crate::generate_msg(fmt_cstr.as_ptr() as *const i8, $($arg),*);
-            console_printf(
-                cpos!(24, 0),
-                0x0C00,
-                msg as *const u8
-            );
+            console_printf(cpos!(24, 0), 0x0C00, buf.as_ptr());
         }
     }};
 }
