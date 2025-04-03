@@ -183,9 +183,9 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
                 panic(core::ptr::null());
             } else {
                 let map = virtual_memory_lookup((*current).p_pagetable, addr as usize);
-                let mut msg = [0u8; 160];
+                let mut msg = [0u8; 15];
                 memcpy(
-                    &mut msg as *mut [u8; 160] as *mut core::ffi::c_void, 
+                    &mut msg as *mut [u8; 15] as *mut core::ffi::c_void, 
                     map.pa as *const core::ffi::c_void, 
                     160
                 );
