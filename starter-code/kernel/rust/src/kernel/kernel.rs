@@ -156,7 +156,7 @@ pub unsafe fn exception(reg: &mut x86_64_registers) {
 
     // It can be useful to log events using `c_log!` macro.
     // Events logged this way are stored in the host's `log.txt` file.
-    /* c_log!("proc ", (*current).p_pid, ": exception ", (*reg).reg_intno, "\n"); */
+    /* c_log!("proc ", (*current).p_pid, ": exception ", reg.reg_intno, "\n"); */
 
     // Show the current cursor location and memory state
     // (unless this is a kernel fault).
