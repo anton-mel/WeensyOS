@@ -4,10 +4,6 @@
 
 WeensyOS is a tiny kernel that can run on bare-metal x86-64 machines (QEMU's emulated CPUs). The initial state of the kernel contains code for bootstrapping kernel, handling exceptions/syscalls, executing user-level program, and helper functions for your CPSC 323 exercises.
 
-> Host CPU-arch: x86_64, Operating System: Linux (Fedora), Application binary interface: GNU
- 
-By compiling for our host triple, the Rust compiler and the linker assume that there is an underlying operating system such as Linux that uses the C runtime by default, which causes the linker errors. So, to avoid the linker errors, we compile for our own environment ```x86_64-weensyos.json``` with no underlying operating system.
-
 Before beginning work (spec is placed inside the `starter-code` folder), follow these 2 steps to configure your Rust compiler.
 
 ## Installing Rust and Cargo
@@ -90,13 +86,6 @@ Please, consider reading through these documentations is you plan to contribute:
     2. https://www.theseus-os.com/
     3. https://zoo.cs.yale.edu/classes/cs323/323/proj5/starter-code/
 ```
-
-Use Cisco VPN to connect off-campus https://docs.ycrc.yale.edu/clusters-at-yale/access/vpn/ or develop locally.
-
-<p align="center">
-  🦀 Stay safe, stay Rusty. Good luck!
-</p>
-
 
 
 
